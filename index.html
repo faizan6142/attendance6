@@ -1147,7 +1147,9 @@
         </div>
     </div>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts: Keep external Bootstrap and replace inline script with complete working version from index (6).html -->
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // ==================== FIREBASE INIT ====================
         const firebaseConfig = {
@@ -3037,4 +3039,15 @@
             });
             
             const today = new Date();
-            const thirtyDa
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(today.getDate() - 30);
+            
+            if (reportFromDate) reportFromDate.valueAsDate = thirtyDaysAgo;
+            if (reportToDate) reportToDate.valueAsDate = today;
+            if (dateSelector) dateSelector.valueAsDate = today;
+        }
+        
+        init();
+    </script>
+</body>
+</html>
