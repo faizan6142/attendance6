@@ -4,6 +4,36 @@ A fully-featured, single-file web application for managing student attendance ac
 
 ---
 
+## ⚡ Get the Code (Copy & Paste)
+
+The **entire application lives in a single file: `index.html`**.
+
+### Option 1 – View the raw file and copy all (quickest)
+
+1. Open the raw file in your browser:  
+   👉 **[Click here for raw `index.html`](https://raw.githubusercontent.com/faizan6142/attendance6/main/index.html)**
+2. Press **Ctrl + A** (Windows/Linux) or **⌘ + A** (Mac) to select everything.
+3. Press **Ctrl + C** / **⌘ + C** to copy.
+4. Paste into a new file named `index.html` and save.
+
+### Option 2 – Download the file directly
+
+Click the link below to download `index.html` straight to your computer:  
+👉 **[Download index.html](https://raw.githubusercontent.com/faizan6142/attendance6/main/index.html)**  
+*(Right-click → "Save link as…" → save as `index.html`)*
+
+### Option 3 – Clone the repo
+
+```bash
+git clone https://github.com/faizan6142/attendance6.git
+cd attendance6
+# open index.html in your browser or editor
+```
+
+> **After you have the file:** update the `firebaseConfig` block inside it with your own Firebase credentials (see [Setup](#setup) below), then open `index.html` in any browser — no build step, no server needed.
+
+---
+
 ## ✨ Features
 
 ### 🔐 Authentication
