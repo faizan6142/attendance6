@@ -3075,7 +3075,7 @@
                 let html = '';
                 sorted.forEach(([reqId, req]) => {
                     const date = new Date(req.timestamp).toLocaleString();
-                    const typeLabel = { course: 'Course', semester: 'Semester', subject: 'Subject', user: 'User' }[req.type] || escapeHtml(req.type);
+                    const typeLabel = { course: 'Course', semester: 'Semester', subject: 'Subject', user: 'User' }[req.type] || 'Unknown';
                     const canApprove = req.requestedBy !== currentUser?.uid;
                     let extraInfo = '';
                     if (req.type === 'semester' && req.courseId) {
@@ -3096,10 +3096,10 @@
                             </div>
                             <div class="d-flex gap-2 align-items-center flex-wrap">
                                 ${canApprove
-                                    ? `<button class="btn btn-success btn-sm" onclick="approveDeletion('${escapeHtml(reqId)}')"><i class="fas fa-check me-1"></i>Approve</button>
-                                       <button class="btn btn-secondary btn-sm" onclick="rejectDeletion('${escapeHtml(reqId)}')"><i class="fas fa-times me-1"></i>Reject</button>`
+                                    ? `<button class="btn btn-success btn-sm" onclick="approveDeletion('${reqId}')"><i class="fas fa-check me-1"></i>Approve</button>
+                                       <button class="btn btn-secondary btn-sm" onclick="rejectDeletion('${reqId}')"><i class="fas fa-times me-1"></i>Reject</button>`
                                     : `<span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Awaiting another admin</span>
-                                       <button class="btn btn-outline-danger btn-sm" onclick="cancelDeletionRequest('${escapeHtml(reqId)}')"><i class="fas fa-ban me-1"></i>Cancel</button>`}
+                                       <button class="btn btn-outline-danger btn-sm" onclick="cancelDeletionRequest('${reqId}')"><i class="fas fa-ban me-1"></i>Cancel</button>`}
                             </div>
                         </div>
                     </div>`;
@@ -3229,7 +3229,7 @@
                                 <div class="announcement-meta"><i class="fas fa-user-tie me-1"></i><strong>${escapeHtml(ann.sentByName)}</strong> &bull; ${escapeHtml(date)}</div>
                                 <div class="announcement-title">${escapeHtml(ann.title)}</div>
                                 <div class="announcement-body">${escapeHtml(ann.message)}</div>
-                                <button class="btn btn-sm btn-outline-danger mt-2" onclick="deleteAnnouncement('${escapeHtml(id)}')"><i class="fas fa-trash me-1"></i>Delete</button>
+                                <button class="btn btn-sm btn-outline-danger mt-2" onclick="deleteAnnouncement('${id}')"><i class="fas fa-trash me-1"></i>Delete</button>
                             </div>`;
                         }).join('');
                     }
