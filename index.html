@@ -520,6 +520,31 @@
             font-size: 0.8rem; font-family: 'DM Mono', monospace;
             border: 1px solid var(--border); color: var(--primary); font-weight: 600;
         }
+
+        /* ========== ANNOUNCEMENTS ========== */
+        .announcement-card {
+            border-left: 4px solid var(--primary);
+            padding: 16px; margin-bottom: 14px;
+            background: var(--light); border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            transition: box-shadow 0.2s;
+        }
+        .announcement-card:hover { box-shadow: var(--shadow-sm); }
+        .announcement-card .announcement-meta { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; }
+        .announcement-card .announcement-title { font-weight: 700; font-size: 1rem; color: #1a1c3a; margin-bottom: 6px; }
+        .announcement-card .announcement-body { font-size: 0.9rem; color: #444; white-space: pre-wrap; line-height: 1.6; }
+
+        /* ========== DELETION REQUEST CARDS ========== */
+        .deletion-request-card {
+            border: 1.5px solid var(--border); padding: 16px;
+            border-radius: var(--radius-sm); margin-bottom: 14px;
+            background: white; border-left: 4px solid var(--danger);
+            transition: box-shadow 0.2s;
+        }
+        .deletion-request-card:hover { box-shadow: var(--shadow-sm); }
+        .deletion-request-card .request-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+        .deletion-request-card .request-title { font-weight: 700; color: var(--danger); font-size: 0.98rem; }
     </style>
 </head>
 <body>
@@ -634,6 +659,8 @@
                     <li class="nav-item"><a class="nav-link" href="#coursesTab" data-bs-toggle="tab">Courses & Subjects</a></li>
                     <li class="nav-item"><a class="nav-link" href="#attendanceTab" data-bs-toggle="tab">Attendance</a></li>
                     <li class="nav-item"><a class="nav-link" href="#reportsTab" data-bs-toggle="tab">Reports</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#announcementsTab" data-bs-toggle="tab" id="announcementsTabLink"><i class="fas fa-bullhorn me-1"></i>Announcements</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#approvalsTab" data-bs-toggle="tab" id="approvalsTabLink"><i class="fas fa-clipboard-check me-1"></i>Pending Approvals <span id="pendingApprovalsCount" class="badge bg-danger ms-1" style="display:none">0</span></a></li>
                 </ul>
             </div>
 
@@ -947,10 +974,55 @@
                     </div>
                 </div>
             </div>
+
+                <!-- ANNOUNCEMENTS TAB -->
+                <div class="tab-pane fade" id="announcementsTab">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="card">
+                                <div class="card-header"><i class="fas fa-bullhorn me-2"></i>Send Announcement</div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Title</label>
+                                        <input type="text" class="form-control" id="announcementTitle" placeholder="Announcement title...">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Message</label>
+                                        <textarea class="form-control" id="announcementMessage" rows="6" placeholder="Write your message here... Students will see this in their dashboard."></textarea>
+                                    </div>
+                                    <button class="btn btn-primary w-100 btn-modern" onclick="sendAnnouncement()"><i class="fas fa-paper-plane me-2"></i>Send to All Students</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-history me-2"></i>Sent Announcements</span>
+                                    <button class="btn btn-sm btn-outline-light" onclick="loadAnnouncements()"><i class="fas fa-sync-alt"></i></button>
+                                </div>
+                                <div class="card-body" id="adminAnnouncementsList" style="max-height:500px;overflow-y:auto;">
+                                    <p class="text-muted text-center">No announcements yet.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PENDING APPROVALS TAB -->
+                <div class="tab-pane fade" id="approvalsTab">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-clipboard-check me-2"></i>Pending Deletion Requests</span>
+                            <button class="btn btn-sm btn-outline-light" onclick="loadDeletionRequests()"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <div class="card-body" id="deletionRequestsList">
+                            <p class="text-muted text-center py-4"><i class="fas fa-check-circle me-2"></i>No pending deletion requests.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <!-- STUDENT DASHBOARD (FIXED) -->
     <div id="studentDashboard" class="dashboard-container">
         <nav class="navbar">
             <div class="container-fluid">
@@ -1016,10 +1088,22 @@
                     </div>
                 </div>
             </div>
+            <!-- STUDENT ANNOUNCEMENTS -->
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-bullhorn me-2"></i>Announcements</span>
+                            <button class="btn btn-sm btn-outline-light" onclick="loadAnnouncements()"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <div class="card-body" id="studentAnnouncementsList" style="max-height:400px;overflow-y:auto;">
+                            <p class="text-muted text-center">Loading announcements...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <!-- CLOUD SYNC BUTTON -->
     <div class="cloud-sync" id="cloudSyncBtn" title="Refresh from cloud"><i class="fas fa-sync-alt fa-lg"></i></div>
 
     <!-- BULK UPDATE MODAL -->
@@ -1578,6 +1662,8 @@
                     renderUsersList();
                     const currentSubject = document.getElementById('attendanceSubject')?.value;
                     updateStats(currentSubject || null);
+                    loadPendingRequestsCount();
+                    loadAnnouncements();
                 } else {
                     studentDash.style.display = 'block';
                     studentWelcome.textContent = `Welcome, ${currentUser.fullName}`;
@@ -1626,6 +1712,7 @@
                     }
                     
                     renderStudentDashboard();
+                    loadAnnouncements();
                 }
                 showToast('Login successful!', 'success');
             } catch (error) {
@@ -1772,18 +1859,11 @@
         }
 
         window.deleteCourse = async function(courseId) {
-            if (!confirm('Are you sure you want to delete this course? This will also delete all semesters and subjects in this course.')) return;
-            
-            const hasAssignments = Object.values(studentCourses).some(sc => sc.courseId === courseId);
-            if (hasAssignments) {
-                if (!confirm('This course has students assigned. Deleting it will remove their assignments. Continue?')) return;
-            }
-            
-            await db.ref('courses/' + courseId).remove();
-            showToast('Course deleted', 'success');
-            await loadAllData();
-            loadCoursesForDropdowns();
-            displayCourseStructure();
+            const course = courses[courseId];
+            const courseName = course?.name || courseId;
+            if (!confirm(`Request deletion of course "${courseName}"?\n\nThis requires approval from another admin before it is executed.`)) return;
+            await createDeletionRequest('course', courseId, courseName, { courseName: course?.name, courseCode: course?.code });
+            showToast('Deletion request submitted. Another admin must approve it.', 'warning');
         }
 
         window.editSemester = function(courseId, semesterId) {
@@ -1804,20 +1884,11 @@
         }
 
         window.deleteSemester = async function(courseId, semesterId) {
-            if (!confirm('Are you sure you want to delete this semester? This will also delete all subjects in this semester.')) return;
-            
-            const hasAssignments = Object.values(studentCourses).some(sc => 
-                sc.courseId === courseId && sc.semester === semesterId
-            );
-            if (hasAssignments) {
-                if (!confirm('This semester has students assigned. Deleting it will remove their assignments. Continue?')) return;
-            }
-            
-            await db.ref(`courses/${courseId}/semesters/${semesterId}`).remove();
-            showToast('Semester deleted', 'success');
-            await loadAllData();
-            loadCoursesForDropdowns();
-            displayCourseStructure();
+            const semester = courses[courseId]?.semesters[semesterId];
+            const semName = semester?.name || semesterId;
+            if (!confirm(`Request deletion of semester "${semName}"?\n\nThis requires approval from another admin before it is executed.`)) return;
+            await createDeletionRequest('semester', semesterId, semName, { courseId, semesterName: semester?.name });
+            showToast('Deletion request submitted. Another admin must approve it.', 'warning');
         }
 
         window.editSubject = function(courseId, semesterId, subjectId) {
@@ -1842,20 +1913,11 @@
         }
 
         window.deleteSubject = async function(courseId, semesterId, subjectId) {
-            if (!confirm('Are you sure you want to delete this subject?')) return;
-            
-            const hasAssignments = Object.values(studentCourses).some(sc => 
-                sc.courseId === courseId && sc.semester === semesterId && sc.subjects.includes(subjectId)
-            );
-            if (hasAssignments) {
-                if (!confirm('This subject has students assigned. Deleting it will remove their assignments. Continue?')) return;
-            }
-            
-            await db.ref(`courses/${courseId}/semesters/${semesterId}/subjects/${subjectId}`).remove();
-            showToast('Subject deleted', 'success');
-            await loadAllData();
-            loadCoursesForDropdowns();
-            displayCourseStructure();
+            const subject = courses[courseId]?.semesters[semesterId]?.subjects[subjectId];
+            const subjectName = subject?.name || subjectId;
+            if (!confirm(`Request deletion of subject "${subjectName}"?\n\nThis requires approval from another admin before it is executed.`)) return;
+            await createDeletionRequest('subject', subjectId, subjectName, { courseId, semesterId, subjectName: subject?.name });
+            showToast('Deletion request submitted. Another admin must approve it.', 'warning');
         }
 
         function displayCourseStructure() {
@@ -2893,17 +2955,12 @@
 
         window.deleteUser = async (uid) => {
             if (uid === currentUser?.uid) { showToast('Cannot delete yourself', 'error'); return; }
-            if (!confirm('Delete user?')) return;
+            const userData = users[uid];
+            const userName = userData?.fullName || uid;
+            if (!confirm(`Request deletion of user "${userName}"?\n\nThis requires approval from another admin before it is executed.`)) return;
             try {
-                const userData = users[uid];
-                if (userData.role === 'student' && userData.rollNo) {
-                    await db.ref('students/' + userData.rollNo).remove();
-                    delete students[userData.rollNo];
-                }
-                await db.ref('users/' + uid).remove();
-                showToast('User removed', 'success');
-                renderUsersList();
-                updateStats();
+                await createDeletionRequest('user', uid, userName, { rollNo: userData?.rollNo, role: userData?.role });
+                showToast('Deletion request submitted. Another admin must approve it.', 'warning');
             } catch (error) {
                 showToast(error.message, 'error');
             }
@@ -2963,6 +3020,253 @@
             });
         }
 
+        // ==================== DELETION REQUEST SYSTEM ====================
+        async function createDeletionRequest(type, targetId, targetName, extraData) {
+            const requestId = 'req_' + Date.now();
+            const request = Object.assign({
+                type,
+                targetId,
+                targetName,
+                requestedBy: currentUser.uid,
+                requestedByName: currentUser.fullName,
+                timestamp: Date.now(),
+                status: 'pending'
+            }, extraData || {});
+            await db.ref('deletionRequests/' + requestId).set(request);
+            loadPendingRequestsCount();
+            return requestId;
+        }
+
+        async function loadPendingRequestsCount() {
+            try {
+                const snap = await db.ref('deletionRequests').orderByChild('status').equalTo('pending').once('value');
+                const count = snap.numChildren();
+                const countEl = document.getElementById('pendingApprovalsCount');
+                if (countEl) {
+                    if (count > 0) {
+                        countEl.textContent = count;
+                        countEl.style.display = 'inline';
+                    } else {
+                        countEl.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading pending requests count:', error);
+            }
+        }
+
+        window.loadDeletionRequests = async function() {
+            try {
+                const snap = await db.ref('deletionRequests').orderByChild('status').equalTo('pending').once('value');
+                const requests = snap.val() || {};
+                const container = document.getElementById('deletionRequestsList');
+                if (!container) return;
+
+                if (Object.keys(requests).length === 0) {
+                    container.innerHTML = '<p class="text-muted text-center py-4"><i class="fas fa-check-circle me-2"></i>No pending deletion requests.</p>';
+                    return;
+                }
+
+                const sorted = Object.entries(requests).sort((a, b) => b[1].timestamp - a[1].timestamp);
+                let html = '';
+                sorted.forEach(([reqId, req]) => {
+                    const date = new Date(req.timestamp).toLocaleString();
+                    const typeLabel = { course: 'Course', semester: 'Semester', subject: 'Subject', user: 'User' }[req.type] || req.type;
+                    const canApprove = req.requestedBy !== currentUser?.uid;
+                    let extraInfo = '';
+                    if (req.type === 'semester' && req.courseId) {
+                        extraInfo = `<div class="request-meta"><i class="fas fa-book me-1"></i>In course: <strong>${courses[req.courseId]?.name || req.courseId}</strong></div>`;
+                    } else if (req.type === 'subject' && req.courseId) {
+                        const courseName = courses[req.courseId]?.name || req.courseId;
+                        const semName = courses[req.courseId]?.semesters?.[req.semesterId]?.name || req.semesterId;
+                        extraInfo = `<div class="request-meta"><i class="fas fa-book me-1"></i>In: <strong>${courseName} / ${semName}</strong></div>`;
+                    } else if (req.type === 'user') {
+                        extraInfo = `<div class="request-meta"><i class="fas fa-id-card me-1"></i>Role: <strong>${req.role || 'unknown'}</strong>${req.rollNo ? ` &bull; Roll: <strong>${req.rollNo}</strong>` : ''}</div>`;
+                    }
+                    html += `<div class="deletion-request-card">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                            <div>
+                                <div class="request-title"><i class="fas fa-trash me-2"></i>Delete ${typeLabel}: <strong>${req.targetName}</strong></div>
+                                <div class="request-meta mt-1"><i class="fas fa-user me-1"></i>Requested by <strong>${req.requestedByName}</strong> &bull; ${date}</div>
+                                ${extraInfo}
+                            </div>
+                            <div class="d-flex gap-2 align-items-center flex-wrap">
+                                ${canApprove
+                                    ? `<button class="btn btn-success btn-sm" onclick="approveDeletion('${reqId}')"><i class="fas fa-check me-1"></i>Approve</button>
+                                       <button class="btn btn-secondary btn-sm" onclick="rejectDeletion('${reqId}')"><i class="fas fa-times me-1"></i>Reject</button>`
+                                    : `<span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Awaiting another admin</span>
+                                       <button class="btn btn-outline-danger btn-sm" onclick="cancelDeletionRequest('${reqId}')"><i class="fas fa-ban me-1"></i>Cancel</button>`}
+                            </div>
+                        </div>
+                    </div>`;
+                });
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading deletion requests:', error);
+                showToast('Error loading deletion requests', 'error');
+            }
+        }
+
+        window.approveDeletion = async function(reqId) {
+            if (!confirm('Approve this deletion? This action cannot be undone.')) return;
+            try {
+                const snap = await db.ref('deletionRequests/' + reqId).once('value');
+                const req = snap.val();
+                if (!req || req.status !== 'pending') { showToast('Request no longer available', 'error'); return; }
+                if (req.requestedBy === currentUser?.uid) { showToast('You cannot approve your own deletion request', 'error'); return; }
+
+                switch (req.type) {
+                    case 'course':
+                        await db.ref('courses/' + req.targetId).remove();
+                        break;
+                    case 'semester':
+                        await db.ref(`courses/${req.courseId}/semesters/${req.targetId}`).remove();
+                        break;
+                    case 'subject':
+                        await db.ref(`courses/${req.courseId}/semesters/${req.semesterId}/subjects/${req.targetId}`).remove();
+                        break;
+                    case 'user':
+                        if (req.rollNo) await db.ref('students/' + req.rollNo).remove();
+                        await db.ref('users/' + req.targetId).remove();
+                        break;
+                }
+
+                await db.ref('deletionRequests/' + reqId).update({
+                    status: 'approved',
+                    approvedBy: currentUser.uid,
+                    approvedByName: currentUser.fullName,
+                    approvedAt: Date.now()
+                });
+
+                showToast('Deletion approved and executed successfully', 'success');
+                await loadAllData();
+                loadCoursesForDropdowns();
+                displayCourseStructure();
+                renderUsersList();
+                loadDeletionRequests();
+                loadPendingRequestsCount();
+                updateStats();
+            } catch (error) {
+                showToast('Error approving deletion: ' + error.message, 'error');
+                console.error('Approve deletion error:', error);
+            }
+        }
+
+        window.rejectDeletion = async function(reqId) {
+            if (!confirm('Reject this deletion request?')) return;
+            try {
+                await db.ref('deletionRequests/' + reqId).update({
+                    status: 'rejected',
+                    rejectedBy: currentUser.uid,
+                    rejectedByName: currentUser.fullName,
+                    rejectedAt: Date.now()
+                });
+                showToast('Deletion request rejected', 'success');
+                loadDeletionRequests();
+                loadPendingRequestsCount();
+            } catch (error) {
+                showToast('Error rejecting deletion: ' + error.message, 'error');
+            }
+        }
+
+        window.cancelDeletionRequest = async function(reqId) {
+            if (!confirm('Cancel your deletion request?')) return;
+            try {
+                await db.ref('deletionRequests/' + reqId).update({
+                    status: 'cancelled',
+                    cancelledBy: currentUser.uid,
+                    cancelledAt: Date.now()
+                });
+                showToast('Deletion request cancelled', 'success');
+                loadDeletionRequests();
+                loadPendingRequestsCount();
+            } catch (error) {
+                showToast('Error cancelling request: ' + error.message, 'error');
+            }
+        }
+
+        // ==================== ANNOUNCEMENT SYSTEM ====================
+        window.sendAnnouncement = async function() {
+            const title = document.getElementById('announcementTitle')?.value?.trim();
+            const message = document.getElementById('announcementMessage')?.value?.trim();
+            if (!title) { showToast('Please enter a title', 'error'); return; }
+            if (!message) { showToast('Please enter a message', 'error'); return; }
+            try {
+                const announcementId = 'ann_' + Date.now();
+                await db.ref('announcements/' + announcementId).set({
+                    title,
+                    message,
+                    sentBy: currentUser.uid,
+                    sentByName: currentUser.fullName,
+                    timestamp: Date.now()
+                });
+                document.getElementById('announcementTitle').value = '';
+                document.getElementById('announcementMessage').value = '';
+                showToast('Announcement sent to all students!', 'success');
+                loadAnnouncements();
+            } catch (error) {
+                showToast('Error sending announcement: ' + error.message, 'error');
+            }
+        }
+
+        window.loadAnnouncements = async function() {
+            try {
+                const snap = await db.ref('announcements').orderByChild('timestamp').once('value');
+                const announcementsData = snap.val() || {};
+                const sorted = Object.entries(announcementsData).sort((a, b) => b[1].timestamp - a[1].timestamp);
+
+                const adminContainer = document.getElementById('adminAnnouncementsList');
+                if (adminContainer) {
+                    if (sorted.length === 0) {
+                        adminContainer.innerHTML = '<p class="text-muted text-center py-4">No announcements yet.</p>';
+                    } else {
+                        adminContainer.innerHTML = sorted.map(([id, ann]) => {
+                            const date = new Date(ann.timestamp).toLocaleString();
+                            return `<div class="announcement-card">
+                                <div class="announcement-meta"><i class="fas fa-user-tie me-1"></i><strong>${ann.sentByName}</strong> &bull; ${date}</div>
+                                <div class="announcement-title">${ann.title}</div>
+                                <div class="announcement-body">${ann.message}</div>
+                                <button class="btn btn-sm btn-outline-danger mt-2" onclick="deleteAnnouncement('${id}')"><i class="fas fa-trash me-1"></i>Delete</button>
+                            </div>`;
+                        }).join('');
+                    }
+                }
+
+                const studentContainer = document.getElementById('studentAnnouncementsList');
+                if (studentContainer) {
+                    if (sorted.length === 0) {
+                        studentContainer.innerHTML = '<p class="text-muted text-center py-3"><i class="fas fa-info-circle me-2"></i>No announcements yet.</p>';
+                    } else {
+                        studentContainer.innerHTML = sorted.map(([id, ann]) => {
+                            const date = new Date(ann.timestamp).toLocaleString();
+                            return `<div class="announcement-card">
+                                <div class="announcement-meta"><i class="fas fa-user-tie me-1"></i><strong>${ann.sentByName}</strong> &bull; ${date}</div>
+                                <div class="announcement-title">${ann.title}</div>
+                                <div class="announcement-body">${ann.message}</div>
+                            </div>`;
+                        }).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading announcements:', error);
+            }
+        }
+
+        window.deleteAnnouncement = async function(annId) {
+            if (!confirm('Delete this announcement?')) return;
+            try {
+                await db.ref('announcements/' + annId).remove();
+                showToast('Announcement deleted', 'success');
+                loadAnnouncements();
+            } catch (error) {
+                showToast('Error deleting announcement: ' + error.message, 'error');
+            }
+        }
+
+        // Tab click listeners for lazy-loading
+        document.getElementById('approvalsTabLink')?.addEventListener('shown.bs.tab', loadDeletionRequests);
+        document.getElementById('announcementsTabLink')?.addEventListener('shown.bs.tab', loadAnnouncements);
+
         // ==================== INIT ====================
         async function init() {
             await createDefaultAdminIfNeeded();
@@ -2985,6 +3289,8 @@
                             renderUsersList();
                             const currentSubject = document.getElementById('attendanceSubject')?.value;
                             updateStats(currentSubject || null);
+                            loadPendingRequestsCount();
+                            loadAnnouncements();
                         } else {
                             studentDash.style.display = 'block';
                             studentWelcome.textContent = `Welcome, ${currentUser.fullName}`;
@@ -3032,6 +3338,7 @@
                             }
                             
                             renderStudentDashboard();
+                            loadAnnouncements();
                         }
                         showToast('Auto-login successful!', 'success');
                     }
