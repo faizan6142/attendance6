@@ -3531,14 +3531,23 @@
             }
         }
 
+        function closeAnnouncementPopup() {
+            const popup = document.getElementById('announcementPopup');
+            if (popup) popup.style.display = 'none';
+        }
+
+        document.getElementById('announcementPopup')?.addEventListener('click', function(e) {
+            if (e.target === this) closeAnnouncementPopup();
+        });
+
         document.getElementById('popupDismissBtn')?.addEventListener('click', async function() {
             const popup = document.getElementById('announcementPopup');
             const annId = popup?.dataset?.annId;
+            closeAnnouncementPopup();
             if (!annId || !currentUser) return;
             const today = new Date().toISOString().split('T')[0];
             try {
                 await db.ref(`announcement_tracking/${currentUser.uid}/dismissed/${annId}`).set(today);
-                popup.style.display = 'none';
                 showToast('Announcement dismissed for today', 'success');
             } catch (error) {
                 showToast('Error: ' + error.message, 'error');
@@ -3548,12 +3557,30 @@
         document.getElementById('popupOptOutBtn')?.addEventListener('click', async function() {
             if (!currentUser) return;
             if (!confirm('Stop receiving announcement popups? You can always scroll down to see announcements on your dashboard.')) return;
+            closeAnnouncementPopup();
             try {
                 await db.ref(`announcement_tracking/${currentUser.uid}/optedOut`).set(true);
-                document.getElementById('announcementPopup').style.display = 'none';
                 showToast('Announcement popups disabled', 'success');
             } catch (error) {
                 showToast('Error: ' + error.message, 'error');
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key !== 'Escape') return;
+            const announcementPopup = document.getElementById('announcementPopup');
+            if (announcementPopup?.style.display === 'flex') {
+                closeAnnouncementPopup();
+                return;
+            }
+            const msgModal = document.getElementById('studentMessageModal');
+            if (msgModal?.style.display === 'flex') {
+                msgModal.style.display = 'none';
+                return;
+            }
+            const bulkModal = document.getElementById('bulkUpdateModal');
+            if (bulkModal?.style.display === 'flex') {
+                bulkModal.style.display = 'none';
             }
         });
 
