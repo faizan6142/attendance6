@@ -669,7 +669,7 @@
                 </a>
                 <div class="d-flex align-items-center gap-3">
                     <span class="welcome-text" id="adminWelcome">Welcome, Admin</span>
-                    <span id="adminRoleBadge" class="role-badge admin">Admin</span>
+                    <span id="adminRoleBadge" class="role-badge admin" style="display:none">Admin</span>
                     <button class="btn btn-nav btn-modern" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
                 </div>
             </div>
@@ -2117,7 +2117,7 @@
                         if (sem.subjects && Object.keys(sem.subjects).length > 0) {
                             Object.entries(sem.subjects).forEach(([subId, sub]) => {
                                 html += `<div class="subject-item">
-                                    <span>📖 ${escapeHtml(sub.name)} (${escapeHtml(sub.code)}) - ${sub.credits} credits</span>
+                                    <span>📖 ${escapeHtml(sub.name)} (${escapeHtml(sub.code)}) - ${escapeHtml(String(sub.credits))} credits</span>
                                     ${isAdmin ? `<div class="action-buttons">
                                         <button class="btn btn-sm btn-outline-primary" onclick="editSubject('${courseId}', '${semId}', '${subId}')"><i class="fas fa-edit"></i></button>
                                         <button class="btn btn-sm btn-outline-danger" onclick="deleteSubject('${courseId}', '${semId}', '${subId}')"><i class="fas fa-trash"></i></button>
@@ -3456,8 +3456,8 @@
                 const isOwn = (viewerRole === 'admin' && msg.from === 'admin') ||
                               (viewerRole === 'student' && msg.from === 'student');
                 const time = new Date(msg.timestamp).toLocaleString();
-                // Admin can delete any message; student can delete their own messages
-                const canDelete = threadId && (isAdmin || (isStudent && msg.from === 'student' && msg.fromName === currentUser?.fullName));
+                // Admin can delete any message; students can delete their own messages (from === 'student' in their own thread)
+                const canDelete = threadId && (isAdmin || (isStudent && msg.from === 'student'));
                 html += `<div class="d-flex ${isOwn ? 'justify-content-end' : 'justify-content-start'} mb-3">
                     <div class="message-bubble ${isOwn ? 'sent' : 'received'}">
                         <div class="message-sender">${escapeHtml(msg.fromName)}</div>
@@ -3474,12 +3474,14 @@
         }
 
         window.deleteMessage = async function(threadId, msgId) {
+            if (!currentUser) return;
+            if (currentUser.role === 'view_only_admin') { showToast('Permission denied', 'error'); return; }
             if (!confirm('Delete this message?')) return;
             try {
                 await db.ref(`messages/${threadId}/messages/${msgId}`).remove();
                 showToast('Message deleted', 'success');
                 // Refresh the appropriate conversation view
-                if (currentUser?.role === 'admin' || currentUser?.role === 'view_only_admin') {
+                if (currentUser.role === 'admin') {
                     openAdminMessageThread(threadId);
                 } else {
                     loadStudentMessages();
@@ -3598,16 +3600,15 @@
         // ==================== INIT ====================
         function applyRolePermissions() {
             const isViewOnly = currentUser?.role === 'view_only_admin';
+            const badge = document.getElementById('adminRoleBadge');
             if (isViewOnly) {
                 adminDash.classList.add('role-view-only');
                 adminDash.classList.remove('role-admin');
-                const badge = document.getElementById('adminRoleBadge');
-                if (badge) { badge.textContent = 'View Only'; badge.className = 'role-badge view-only'; }
+                if (badge) { badge.textContent = 'View Only'; badge.className = 'role-badge view-only'; badge.style.display = ''; }
             } else {
                 adminDash.classList.add('role-admin');
                 adminDash.classList.remove('role-view-only');
-                const badge = document.getElementById('adminRoleBadge');
-                if (badge) { badge.textContent = 'Admin'; badge.className = 'role-badge admin'; }
+                if (badge) { badge.textContent = 'Admin'; badge.className = 'role-badge admin'; badge.style.display = ''; }
             }
         }
 
