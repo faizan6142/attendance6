@@ -1274,7 +1274,7 @@
             <div class="announcement-popup-body" id="popupAnnouncementBody"></div>
             <div class="announcement-popup-meta" id="popupAnnouncementMeta"></div>
             <div class="d-flex flex-column gap-2">
-                <button class="btn btn-primary btn-modern w-100" id="popupDismissBtn">
+                <button class="btn btn-primary btn-modern w-100" id="popupDismissBtn" title="This announcement will reappear tomorrow unless you opt out below">
                     <i class="fas fa-check me-2"></i>Got it! (Dismiss for today)
                 </button>
                 <button class="btn btn-outline-secondary btn-modern w-100" id="popupOptOutBtn">
@@ -3702,7 +3702,9 @@
         document.getElementById('createTokenBtn')?.addEventListener('click', async function() {
             const desc = document.getElementById('newTokenDesc')?.value?.trim();
             if (!desc) { showToast('Enter a description for the token', 'error'); return; }
-            const token = 'TK-' + Math.random().toString(36).substring(2, 10).toUpperCase() +
+            const bytes = new Uint8Array(16);
+            crypto.getRandomValues(bytes);
+            const token = 'TK-' + Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase().slice(0, 12) +
                           '-' + Date.now().toString(36).toUpperCase();
             try {
                 await db.ref('admin_tokens').push({
@@ -3877,12 +3879,12 @@
             const text = input?.value?.trim();
             if (!text) return;
             try {
-                const msgId = 'msg_' + Date.now();
-                await db.ref(`messages/${currentMessageThread}/messages/${msgId}`).set({
-                    text, from: 'admin', fromName: currentUser.fullName, timestamp: Date.now()
+                const msgRef = db.ref(`messages/${currentMessageThread}/messages`).push();
+                await msgRef.set({
+                    text, from: 'admin', fromName: currentUser.fullName, timestamp: firebase.database.ServerValue.TIMESTAMP
                 });
                 await db.ref(`messages/${currentMessageThread}`).update({
-                    lastMessage: text, lastMessageTimestamp: Date.now(),
+                    lastMessage: text, lastMessageTimestamp: firebase.database.ServerValue.TIMESTAMP,
                     unreadByAdmin: false, unreadByStudent: true
                 });
                 if (input) input.value = '';
@@ -3931,16 +3933,16 @@
                         studentUid: currentUser.uid,
                         studentName: currentUser.fullName,
                         studentRollNo: currentUser.rollNo || '',
-                        createdAt: Date.now(),
-                        lastMessageTimestamp: Date.now()
+                        createdAt: firebase.database.ServerValue.TIMESTAMP,
+                        lastMessageTimestamp: firebase.database.ServerValue.TIMESTAMP
                     });
                 }
-                const msgId = 'msg_' + Date.now();
-                await db.ref(`messages/${threadId}/messages/${msgId}`).set({
-                    text, from: 'student', fromName: currentUser.fullName, timestamp: Date.now()
+                const msgRef = db.ref(`messages/${threadId}/messages`).push();
+                await msgRef.set({
+                    text, from: 'student', fromName: currentUser.fullName, timestamp: firebase.database.ServerValue.TIMESTAMP
                 });
                 await db.ref(`messages/${threadId}`).update({
-                    lastMessage: text, lastMessageTimestamp: Date.now(),
+                    lastMessage: text, lastMessageTimestamp: firebase.database.ServerValue.TIMESTAMP,
                     unreadByAdmin: true, unreadByStudent: false
                 });
                 if (input) input.value = '';
