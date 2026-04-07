@@ -544,6 +544,85 @@
         .deletion-request-card:hover { box-shadow: var(--shadow-sm); }
         .deletion-request-card .request-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
         .deletion-request-card .request-title { font-weight: 700; color: var(--danger); font-size: 0.98rem; }
+
+        /* ========== ANNOUNCEMENT POPUP ========== */
+        .announcement-popup-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.72); backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center; z-index: 4000;
+        }
+        .announcement-popup-content {
+            background: white; border-radius: 24px; padding: 36px 32px 28px;
+            max-width: 480px; width: 92%; position: relative;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+            border-top: 5px solid var(--primary);
+            animation: slideUp 0.4s cubic-bezier(0.16,1,0.3,1);
+        }
+        .announcement-popup-icon {
+            width: 68px; height: 68px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 20px; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 18px; box-shadow: 0 8px 28px rgba(91,94,244,0.4);
+        }
+        .announcement-popup-title { font-size: 1.3rem; font-weight: 800; color: #1a1c3a; text-align: center; margin-bottom: 12px; }
+        .announcement-popup-body { color: #555; line-height: 1.7; white-space: pre-wrap; max-height: 180px; overflow-y: auto; margin-bottom: 14px; font-size: 0.95rem; }
+        .announcement-popup-meta { font-size: 0.78rem; color: var(--text-muted); text-align: center; margin-bottom: 18px; }
+
+        /* ========== MESSAGING ========== */
+        .message-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
+            display: none; justify-content: center; align-items: center; z-index: 3500;
+        }
+        .message-modal-content {
+            background: white; border-radius: 20px;
+            width: 92%; max-width: 600px; max-height: 90vh;
+            display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+        }
+        .message-modal-header {
+            background: linear-gradient(135deg, #1a1c3a 0%, #252850 100%);
+            color: white; padding: 18px 22px;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-shrink: 0;
+        }
+        .message-modal-header h5 { margin: 0; font-weight: 700; font-size: 1rem; }
+        .messages-scroll-area { flex: 1; overflow-y: auto; padding: 16px; min-height: 200px; max-height: 380px; background: #f8f9ff; }
+        .message-input-area { padding: 14px 16px; border-top: 1px solid var(--border); background: white; flex-shrink: 0; }
+        .message-bubble {
+            max-width: 74%; padding: 10px 15px; border-radius: 16px;
+            margin-bottom: 10px; font-size: 0.9rem; line-height: 1.5; word-break: break-word;
+        }
+        .message-bubble.sent {
+            background: linear-gradient(135deg, var(--primary), #7b7efc);
+            color: white; margin-left: auto; border-bottom-right-radius: 4px;
+        }
+        .message-bubble.received {
+            background: white; color: #333; border-bottom-left-radius: 4px;
+            border: 1px solid var(--border); box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .message-sender { font-size: 0.7rem; font-weight: 700; margin-bottom: 3px; opacity: 0.75; }
+        .message-time { font-size: 0.68rem; opacity: 0.6; margin-top: 4px; }
+        .message-thread-item {
+            padding: 13px 15px; border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border); margin-bottom: 9px;
+            cursor: pointer; transition: all 0.2s; background: white;
+        }
+        .message-thread-item:hover { border-color: var(--primary); background: var(--light); }
+        .message-thread-item.unread { border-left: 4px solid var(--primary); background: rgba(91,94,244,0.04); }
+        .msg-nav-badge {
+            position: absolute; top: -5px; right: -5px;
+            background: var(--danger); color: white; border-radius: 50%;
+            width: 18px; height: 18px; font-size: 0.65rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .approval-ann-card {
+            border: 1.5px solid var(--border); padding: 16px;
+            border-radius: var(--radius-sm); margin-bottom: 14px;
+            background: white; border-left: 4px solid var(--warning);
+            transition: box-shadow 0.2s;
+        }
+        .approval-ann-card:hover { box-shadow: var(--shadow-sm); }
     </style>
 </head>
 <body>
@@ -660,6 +739,7 @@
                     <li class="nav-item"><a class="nav-link" href="#reportsTab" data-bs-toggle="tab">Reports</a></li>
                     <li class="nav-item"><a class="nav-link" href="#announcementsTab" data-bs-toggle="tab" id="announcementsTabLink"><i class="fas fa-bullhorn me-1"></i>Announcements</a></li>
                     <li class="nav-item"><a class="nav-link" href="#approvalsTab" data-bs-toggle="tab" id="approvalsTabLink"><i class="fas fa-clipboard-check me-1"></i>Pending Approvals <span id="pendingApprovalsCount" class="badge bg-danger ms-1" style="display:none">0</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#messagesTab" data-bs-toggle="tab" id="messagesTabLink"><i class="fas fa-envelope me-1"></i>Messages <span id="adminMessagesCount" class="badge bg-danger ms-1" style="display:none">0</span></a></li>
                 </ul>
             </div>
 
@@ -1018,6 +1098,81 @@
                             <p class="text-muted text-center py-4"><i class="fas fa-check-circle me-2"></i>No pending deletion requests.</p>
                         </div>
                     </div>
+                    <!-- Pending Announcement Approvals -->
+                    <div class="card mt-3">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-bullhorn me-2"></i>Pending Announcement Approvals</span>
+                            <button class="btn btn-sm btn-outline-light" onclick="loadAnnouncementApprovals()"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                        <div class="card-body" id="announcementApprovalsList">
+                            <p class="text-muted text-center py-4"><i class="fas fa-check-circle me-2"></i>No pending announcement approvals.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MESSAGES TAB -->
+                <div class="tab-pane fade" id="messagesTab">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-inbox me-2"></i>Student Messages</span>
+                                    <button class="btn btn-sm btn-outline-light" onclick="loadMessageThreads()"><i class="fas fa-sync-alt"></i></button>
+                                </div>
+                                <div class="card-body p-2" id="messageThreadsList" style="max-height:520px;overflow-y:auto;">
+                                    <p class="text-muted text-center py-4">No messages yet.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center" id="messageConversationHeader">
+                                    <span><i class="fas fa-comments me-2"></i>Conversation</span>
+                                </div>
+                                <div class="messages-scroll-area" id="adminMessageConversation">
+                                    <p class="text-muted text-center py-4">Select a thread from the left to view the conversation.</p>
+                                </div>
+                                <div id="adminReplyArea" style="display:none;" class="message-input-area">
+                                    <div class="d-flex gap-2">
+                                        <input type="text" class="form-control" id="adminReplyInput" placeholder="Type your reply...">
+                                        <button class="btn btn-primary btn-modern" id="adminSendReplyBtn"><i class="fas fa-paper-plane"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Access Token Management -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header"><i class="fas fa-key me-2"></i>Access Token Management <small class="ms-2 opacity-75">(Super Admin)</small></div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <label class="form-label">Create New Access Token</label>
+                                            <input type="text" class="form-control mb-2" id="newTokenDesc" placeholder="Description (e.g., For Admin John)">
+                                            <button class="btn btn-warning btn-modern" id="createTokenBtn"><i class="fas fa-plus me-2"></i>Generate Token</button>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <label class="form-label">Active Tokens</label>
+                                            <div id="tokensList" style="max-height:180px;overflow-y:auto;">
+                                                <p class="text-muted text-center py-2">No active tokens.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 p-3 rounded border" style="background:var(--light);">
+                                        <label class="form-label"><i class="fas fa-unlock-alt me-2 text-primary"></i>Enter Your Access Token <small class="text-muted">(bypasses approval requirement)</small></label>
+                                        <div class="d-flex gap-2">
+                                            <input type="password" class="form-control" id="accessTokenInput" placeholder="Paste token here...">
+                                            <button class="btn btn-outline-primary" id="validateTokenBtn"><i class="fas fa-check me-1"></i>Validate</button>
+                                        </div>
+                                        <div id="tokenStatus" class="mt-2" style="font-size:0.85rem;font-weight:600;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1031,6 +1186,10 @@
                 </a>
                 <div class="d-flex align-items-center gap-3">
                     <span class="welcome-text" id="studentWelcome">Welcome, Student</span>
+                    <div class="position-relative">
+                        <button class="btn btn-nav btn-modern" id="openStudentMsgBtn"><i class="fas fa-envelope me-2"></i>Messages</button>
+                        <span id="studentMsgBadge" class="msg-nav-badge" style="display:none;">!</span>
+                    </div>
                     <button class="btn btn-nav btn-modern" id="studentLogoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
                 </div>
             </div>
@@ -1104,6 +1263,45 @@
         </div>
     </div>
     <div class="cloud-sync" id="cloudSyncBtn" title="Refresh from cloud"><i class="fas fa-sync-alt fa-lg"></i></div>
+
+    <!-- ANNOUNCEMENT POPUP MODAL -->
+    <div id="announcementPopup" class="announcement-popup-overlay">
+        <div class="announcement-popup-content">
+            <div class="announcement-popup-icon">
+                <i class="fas fa-bullhorn fa-2x" style="color:white;"></i>
+            </div>
+            <div class="announcement-popup-title" id="popupAnnouncementTitle"></div>
+            <div class="announcement-popup-body" id="popupAnnouncementBody"></div>
+            <div class="announcement-popup-meta" id="popupAnnouncementMeta"></div>
+            <div class="d-flex flex-column gap-2">
+                <button class="btn btn-primary btn-modern w-100" id="popupDismissBtn" title="This announcement will reappear tomorrow unless you opt out below">
+                    <i class="fas fa-check me-2"></i>Got it! (Dismiss for today)
+                </button>
+                <button class="btn btn-outline-secondary btn-modern w-100" id="popupOptOutBtn">
+                    <i class="fas fa-bell-slash me-2"></i>Don't show announcement popups again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STUDENT MESSAGING MODAL -->
+    <div id="studentMessageModal" class="message-modal-overlay">
+        <div class="message-modal-content">
+            <div class="message-modal-header">
+                <h5><i class="fas fa-comments me-2"></i>Message Admin</h5>
+                <button class="btn-close btn-close-white" id="closeStudentMsgModal"></button>
+            </div>
+            <div class="messages-scroll-area" id="studentMessageConversation">
+                <p class="text-muted text-center py-4"><i class="fas fa-paper-plane me-2"></i>Loading messages...</p>
+            </div>
+            <div class="message-input-area">
+                <div class="d-flex gap-2">
+                    <input type="text" class="form-control" id="studentMsgInput" placeholder="Type your message to admin...">
+                    <button class="btn btn-primary btn-modern" id="studentSendMsgBtn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- BULK UPDATE MODAL -->
     <div class="bulk-update-modal" id="bulkUpdateModal">
@@ -1718,6 +1916,8 @@
                     
                     renderStudentDashboard();
                     loadAnnouncements();
+                    setTimeout(checkAndShowAnnouncementPopup, 500);
+                    updateStudentMsgBadge();
                 }
                 showToast('Login successful!', 'success');
             } catch (error) {
@@ -3043,8 +3243,11 @@
 
         async function loadPendingRequestsCount() {
             try {
-                const snap = await db.ref('deletionRequests').orderByChild('status').equalTo('pending').once('value');
-                const count = snap.numChildren();
+                const [snap1, snap2] = await Promise.all([
+                    db.ref('deletionRequests').orderByChild('status').equalTo('pending').once('value'),
+                    db.ref('announcementApprovals').orderByChild('status').equalTo('pending').once('value')
+                ]);
+                const count = snap1.numChildren() + snap2.numChildren();
                 const countEl = document.getElementById('pendingApprovalsCount');
                 if (countEl) {
                     if (count > 0) {
@@ -3196,17 +3399,34 @@
             if (!title) { showToast('Please enter a title', 'error'); return; }
             if (!message) { showToast('Please enter a message', 'error'); return; }
             try {
-                await db.ref('announcements').push({
-                    title,
-                    message,
-                    sentBy: currentUser.uid,
-                    sentByName: currentUser.fullName,
-                    timestamp: Date.now()
-                });
-                document.getElementById('announcementTitle').value = '';
-                document.getElementById('announcementMessage').value = '';
-                showToast('Announcement sent to all students!', 'success');
-                loadAnnouncements();
+                if (currentAdminToken) {
+                    // Admin has a valid token — send directly
+                    await db.ref('announcements').push({
+                        title,
+                        message,
+                        sentBy: currentUser.uid,
+                        sentByName: currentUser.fullName,
+                        timestamp: Date.now()
+                    });
+                    document.getElementById('announcementTitle').value = '';
+                    document.getElementById('announcementMessage').value = '';
+                    showToast('Announcement sent to all students!', 'success');
+                    loadAnnouncements();
+                } else {
+                    // No token — create approval request
+                    await db.ref('announcementApprovals').push({
+                        title,
+                        message,
+                        requestedBy: currentUser.uid,
+                        requestedByName: currentUser.fullName,
+                        timestamp: Date.now(),
+                        status: 'pending'
+                    });
+                    document.getElementById('announcementTitle').value = '';
+                    document.getElementById('announcementMessage').value = '';
+                    showToast('Announcement submitted for approval. Another admin must approve it before students see it.', 'warning');
+                    loadPendingRequestsCount();
+                }
             } catch (error) {
                 showToast('Error sending announcement: ' + error.message, 'error');
             }
@@ -3267,8 +3487,496 @@
         }
 
         // Tab click listeners for lazy-loading
-        document.getElementById('approvalsTabLink')?.addEventListener('shown.bs.tab', loadDeletionRequests);
+        document.getElementById('approvalsTabLink')?.addEventListener('shown.bs.tab', function() {
+            loadDeletionRequests();
+            loadAnnouncementApprovals();
+        });
         document.getElementById('announcementsTabLink')?.addEventListener('shown.bs.tab', loadAnnouncements);
+        document.getElementById('messagesTabLink')?.addEventListener('shown.bs.tab', function() {
+            loadMessageThreads();
+            loadTokensList();
+        });
+
+        // ==================== SMART ANNOUNCEMENT POPUP ====================
+        async function checkAndShowAnnouncementPopup() {
+            if (!currentUser || currentUser.role !== 'student') return;
+            try {
+                // Check if student opted out
+                const optOutSnap = await db.ref(`announcement_tracking/${currentUser.uid}/optedOut`).once('value');
+                if (optOutSnap.val() === true) return;
+
+                // Get latest announcement
+                const snap = await db.ref('announcements').orderByChild('timestamp').limitToLast(1).once('value');
+                if (!snap.exists()) return;
+                const entries = Object.entries(snap.val());
+                if (entries.length === 0) return;
+                const [annId, ann] = entries[0];
+
+                // Check if dismissed today
+                const today = new Date().toISOString().split('T')[0];
+                const dismissSnap = await db.ref(`announcement_tracking/${currentUser.uid}/dismissed/${annId}`).once('value');
+                if (dismissSnap.val() === today) return;
+
+                // Show popup
+                const popup = document.getElementById('announcementPopup');
+                if (!popup) return;
+                document.getElementById('popupAnnouncementTitle').textContent = ann.title;
+                document.getElementById('popupAnnouncementBody').textContent = ann.message;
+                document.getElementById('popupAnnouncementMeta').textContent =
+                    `From ${ann.sentByName || 'Admin'} \u2022 ${new Date(ann.timestamp).toLocaleString()}`;
+                popup.dataset.annId = annId;
+                popup.style.display = 'flex';
+            } catch (error) {
+                console.error('Error checking announcement popup:', error);
+            }
+        }
+
+        document.getElementById('popupDismissBtn')?.addEventListener('click', async function() {
+            const popup = document.getElementById('announcementPopup');
+            const annId = popup?.dataset?.annId;
+            if (!annId || !currentUser) return;
+            const today = new Date().toISOString().split('T')[0];
+            try {
+                await db.ref(`announcement_tracking/${currentUser.uid}/dismissed/${annId}`).set(today);
+                popup.style.display = 'none';
+                showToast('Announcement dismissed for today', 'success');
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        });
+
+        document.getElementById('popupOptOutBtn')?.addEventListener('click', async function() {
+            if (!currentUser) return;
+            if (!confirm('Stop receiving announcement popups? You can always scroll down to see announcements on your dashboard.')) return;
+            try {
+                await db.ref(`announcement_tracking/${currentUser.uid}/optedOut`).set(true);
+                document.getElementById('announcementPopup').style.display = 'none';
+                showToast('Announcement popups disabled', 'success');
+            } catch (error) {
+                showToast('Error: ' + error.message, 'error');
+            }
+        });
+
+        // ==================== ANNOUNCEMENT APPROVALS ====================
+        window.loadAnnouncementApprovals = async function() {
+            try {
+                const snap = await db.ref('announcementApprovals').orderByChild('status').equalTo('pending').once('value');
+                const approvals = snap.val() || {};
+                const container = document.getElementById('announcementApprovalsList');
+                if (!container) return;
+
+                if (Object.keys(approvals).length === 0) {
+                    container.innerHTML = '<p class="text-muted text-center py-4"><i class="fas fa-check-circle me-2"></i>No pending announcement approvals.</p>';
+                    return;
+                }
+
+                const sorted = Object.entries(approvals).sort((a, b) => b[1].timestamp - a[1].timestamp);
+                let html = '';
+                sorted.forEach(([reqId, req]) => {
+                    const date = new Date(req.timestamp).toLocaleString();
+                    const canApprove = req.requestedBy !== currentUser?.uid;
+                    html += `<div class="approval-ann-card">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                            <div>
+                                <div style="font-weight:700;color:var(--warning);font-size:0.98rem;"><i class="fas fa-bullhorn me-2"></i>${escapeHtml(req.title)}</div>
+                                <div style="font-size:0.82rem;color:var(--text-muted);margin-top:4px;"><i class="fas fa-user me-1"></i>By <strong>${escapeHtml(req.requestedByName)}</strong> &bull; ${escapeHtml(date)}</div>
+                                <div style="margin-top:8px;font-size:0.88rem;color:#555;white-space:pre-wrap;max-height:80px;overflow:hidden;">${escapeHtml(req.message)}</div>
+                            </div>
+                            <div class="d-flex gap-2 align-items-center flex-wrap">
+                                ${canApprove
+                                    ? `<button class="btn btn-success btn-sm" onclick="approveAnnouncement('${reqId}')"><i class="fas fa-check me-1"></i>Approve &amp; Send</button>
+                                       <button class="btn btn-secondary btn-sm" onclick="rejectAnnouncement('${reqId}')"><i class="fas fa-times me-1"></i>Reject</button>`
+                                    : `<span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Awaiting another admin</span>
+                                       <button class="btn btn-outline-danger btn-sm" onclick="cancelAnnouncementRequest('${reqId}')"><i class="fas fa-ban me-1"></i>Cancel</button>`}
+                            </div>
+                        </div>
+                    </div>`;
+                });
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading announcement approvals:', error);
+            }
+        }
+
+        window.approveAnnouncement = async function(reqId) {
+            if (!confirm('Approve and send this announcement to all students?')) return;
+            try {
+                const snap = await db.ref('announcementApprovals/' + reqId).once('value');
+                const req = snap.val();
+                if (!req || req.status !== 'pending') { showToast('Request no longer available', 'error'); return; }
+                if (req.requestedBy === currentUser?.uid) { showToast('You cannot approve your own announcement request', 'error'); return; }
+
+                await db.ref('announcements').push({
+                    title: req.title,
+                    message: req.message,
+                    sentBy: req.requestedBy,
+                    sentByName: req.requestedByName,
+                    timestamp: Date.now(),
+                    approvedBy: currentUser.uid,
+                    approvedByName: currentUser.fullName
+                });
+
+                await db.ref('announcementApprovals/' + reqId).update({
+                    status: 'approved',
+                    approvedBy: currentUser.uid,
+                    approvedByName: currentUser.fullName,
+                    approvedAt: Date.now()
+                });
+
+                showToast('Announcement approved and sent to all students!', 'success');
+                loadAnnouncementApprovals();
+                loadPendingRequestsCount();
+                loadAnnouncements();
+            } catch (error) {
+                showToast('Error approving announcement: ' + error.message, 'error');
+            }
+        }
+
+        window.rejectAnnouncement = async function(reqId) {
+            if (!confirm('Reject this announcement request?')) return;
+            try {
+                await db.ref('announcementApprovals/' + reqId).update({
+                    status: 'rejected',
+                    rejectedBy: currentUser.uid,
+                    rejectedByName: currentUser.fullName,
+                    rejectedAt: Date.now()
+                });
+                showToast('Announcement request rejected', 'success');
+                loadAnnouncementApprovals();
+                loadPendingRequestsCount();
+            } catch (error) {
+                showToast('Error rejecting announcement: ' + error.message, 'error');
+            }
+        }
+
+        window.cancelAnnouncementRequest = async function(reqId) {
+            if (!confirm('Cancel your announcement request?')) return;
+            try {
+                await db.ref('announcementApprovals/' + reqId).update({
+                    status: 'cancelled',
+                    cancelledBy: currentUser.uid,
+                    cancelledAt: Date.now()
+                });
+                showToast('Announcement request cancelled', 'success');
+                loadAnnouncementApprovals();
+                loadPendingRequestsCount();
+            } catch (error) {
+                showToast('Error cancelling request: ' + error.message, 'error');
+            }
+        }
+
+        // ==================== ACCESS TOKEN MANAGEMENT ====================
+        let currentAdminToken = null;
+
+        window.loadTokensList = async function() {
+            try {
+                const snap = await db.ref('admin_tokens').orderByChild('active').equalTo(true).once('value');
+                const tokens = snap.val() || {};
+                const container = document.getElementById('tokensList');
+                if (!container) return;
+
+                const entries = Object.entries(tokens);
+                if (entries.length === 0) {
+                    container.innerHTML = '<p class="text-muted text-center py-2">No active tokens.</p>';
+                    return;
+                }
+
+                let html = `<table class="table table-sm mb-0">
+                    <thead><tr><th>Description</th><th>Token</th><th>Created</th><th></th></tr></thead><tbody>`;
+                entries.forEach(([id, t]) => {
+                    const date = new Date(t.createdAt).toLocaleDateString();
+                    html += `<tr>
+                        <td>${escapeHtml(t.description)}</td>
+                        <td><code style="font-size:0.78rem;">${escapeHtml(t.token)}</code></td>
+                        <td style="font-size:0.78rem;white-space:nowrap;">${date}</td>
+                        <td><button class="btn btn-sm btn-outline-danger" onclick="revokeToken('${id}')"><i class="fas fa-ban"></i></button></td>
+                    </tr>`;
+                });
+                html += '</tbody></table>';
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading tokens:', error);
+            }
+        }
+
+        document.getElementById('createTokenBtn')?.addEventListener('click', async function() {
+            const desc = document.getElementById('newTokenDesc')?.value?.trim();
+            if (!desc) { showToast('Enter a description for the token', 'error'); return; }
+            const bytes = new Uint8Array(16);
+            crypto.getRandomValues(bytes);
+            const token = 'TK-' + Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase().slice(0, 12) +
+                          '-' + Date.now().toString(36).toUpperCase();
+            try {
+                await db.ref('admin_tokens').push({
+                    token, description: desc,
+                    createdBy: currentUser.uid,
+                    createdByName: currentUser.fullName,
+                    createdAt: Date.now(), active: true
+                });
+                document.getElementById('newTokenDesc').value = '';
+                showToast('Token created: ' + token + ' — Copy it now!', 'success');
+                loadTokensList();
+            } catch (error) {
+                showToast('Error creating token: ' + error.message, 'error');
+            }
+        });
+
+        window.revokeToken = async function(tokenId) {
+            if (!confirm('Revoke this token? Admins using it will lose bypass access.')) return;
+            try {
+                await db.ref(`admin_tokens/${tokenId}/active`).set(false);
+                if (currentAdminToken) {
+                    // Clear session token since it might have been this one
+                    currentAdminToken = null;
+                    const statusEl = document.getElementById('tokenStatus');
+                    if (statusEl) { statusEl.textContent = ''; }
+                    const input = document.getElementById('accessTokenInput');
+                    if (input) input.value = '';
+                }
+                showToast('Token revoked', 'success');
+                loadTokensList();
+            } catch (error) {
+                showToast('Error revoking token: ' + error.message, 'error');
+            }
+        }
+
+        document.getElementById('validateTokenBtn')?.addEventListener('click', async function() {
+            const inputToken = document.getElementById('accessTokenInput')?.value?.trim();
+            const statusEl = document.getElementById('tokenStatus');
+            if (!inputToken) {
+                if (statusEl) { statusEl.textContent = 'Please enter a token'; statusEl.style.color = 'var(--danger)'; }
+                return;
+            }
+            try {
+                const snap = await db.ref('admin_tokens').orderByChild('token').equalTo(inputToken).once('value');
+                const tokens = snap.val();
+                if (!tokens) {
+                    currentAdminToken = null;
+                    if (statusEl) { statusEl.textContent = '\u2717 Invalid token'; statusEl.style.color = 'var(--danger)'; }
+                    return;
+                }
+                const validEntry = Object.entries(tokens).find(([id, t]) => t.active);
+                if (!validEntry) {
+                    currentAdminToken = null;
+                    if (statusEl) { statusEl.textContent = '\u2717 Token has been revoked'; statusEl.style.color = 'var(--danger)'; }
+                    return;
+                }
+                currentAdminToken = inputToken;
+                if (statusEl) {
+                    statusEl.textContent = '\u2713 Token valid (' + escapeHtml(validEntry[1].description) + ') \u2014 Approval bypass active';
+                    statusEl.style.color = 'var(--success)';
+                }
+                showToast('Access token validated! Elevated privileges active.', 'success');
+            } catch (error) {
+                if (statusEl) { statusEl.textContent = 'Error validating token'; statusEl.style.color = 'var(--danger)'; }
+                console.error('Token validation error:', error);
+            }
+        });
+
+        // ==================== MESSAGING SYSTEM ====================
+        let currentMessageThread = null;
+
+        async function loadMessageThreads() {
+            if (!currentUser || currentUser.role !== 'admin') return;
+            try {
+                const snap = await db.ref('messages').orderByChild('lastMessageTimestamp').once('value');
+                const threads = snap.val() || {};
+                const container = document.getElementById('messageThreadsList');
+                if (!container) return;
+
+                const sorted = Object.entries(threads)
+                    .sort((a, b) => (b[1].lastMessageTimestamp || 0) - (a[1].lastMessageTimestamp || 0));
+
+                if (sorted.length === 0) {
+                    container.innerHTML = '<p class="text-muted text-center py-4">No messages yet.</p>';
+                    updateAdminMsgBadge(0);
+                    return;
+                }
+
+                let unreadCount = 0;
+                let html = '';
+                sorted.forEach(([threadId, thread]) => {
+                    if (thread.unreadByAdmin) unreadCount++;
+                    const time = thread.lastMessageTimestamp
+                        ? new Date(thread.lastMessageTimestamp).toLocaleDateString() : '';
+                    const preview = (thread.lastMessage || '').substring(0, 55);
+                    html += `<div class="message-thread-item ${thread.unreadByAdmin ? 'unread' : ''}" onclick="openAdminMessageThread('${threadId}')">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <strong>${escapeHtml(thread.studentName || 'Unknown')}</strong>
+                            <span style="font-size:0.72rem;color:var(--text-muted);">${time}</span>
+                        </div>
+                        ${thread.studentRollNo ? `<div style="font-size:0.76rem;color:var(--primary);">Roll: ${escapeHtml(thread.studentRollNo)}</div>` : ''}
+                        <div style="font-size:0.8rem;color:var(--text-muted);margin-top:3px;">${escapeHtml(preview)}${(thread.lastMessage||'').length > 55 ? '...' : ''}</div>
+                        ${thread.unreadByAdmin ? '<span class="badge bg-primary mt-1">New</span>' : ''}
+                    </div>`;
+                });
+                container.innerHTML = html;
+                updateAdminMsgBadge(unreadCount);
+            } catch (error) {
+                console.error('Error loading message threads:', error);
+            }
+        }
+
+        function updateAdminMsgBadge(count) {
+            const badge = document.getElementById('adminMessagesCount');
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'inline' : 'none';
+            }
+        }
+
+        window.openAdminMessageThread = async function(threadId) {
+            currentMessageThread = threadId;
+            try {
+                const snap = await db.ref(`messages/${threadId}`).once('value');
+                const thread = snap.val();
+                if (!thread) return;
+
+                await db.ref(`messages/${threadId}/unreadByAdmin`).set(false);
+
+                const header = document.getElementById('messageConversationHeader');
+                if (header) {
+                    header.querySelector('span').innerHTML =
+                        `<i class="fas fa-user me-2"></i>Conversation with <strong>${escapeHtml(thread.studentName)}</strong>`;
+                }
+
+                document.getElementById('adminReplyArea').style.display = 'block';
+                renderMessagesInContainer(thread.messages || {}, 'admin', 'adminMessageConversation');
+                loadMessageThreads();
+            } catch (error) {
+                console.error('Error opening message thread:', error);
+            }
+        }
+
+        function renderMessagesInContainer(messages, viewerRole, containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const sorted = Object.values(messages).sort((a, b) => a.timestamp - b.timestamp);
+            if (sorted.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center py-4">No messages yet. Start the conversation!</p>';
+                return;
+            }
+            let html = '';
+            sorted.forEach(msg => {
+                const isOwn = (viewerRole === 'admin' && msg.from === 'admin') ||
+                              (viewerRole === 'student' && msg.from === 'student');
+                const time = new Date(msg.timestamp).toLocaleString();
+                html += `<div class="d-flex ${isOwn ? 'justify-content-end' : 'justify-content-start'} mb-3">
+                    <div class="message-bubble ${isOwn ? 'sent' : 'received'}">
+                        <div class="message-sender">${escapeHtml(msg.fromName)}</div>
+                        <div>${escapeHtml(msg.text)}</div>
+                        <div class="message-time ${isOwn ? 'text-end' : ''}">${time}</div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendAdminReply() {
+            if (!currentMessageThread || !currentUser) return;
+            const input = document.getElementById('adminReplyInput');
+            const text = input?.value?.trim();
+            if (!text) return;
+            try {
+                const msgRef = db.ref(`messages/${currentMessageThread}/messages`).push();
+                await msgRef.set({
+                    text, from: 'admin', fromName: currentUser.fullName, timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                await db.ref(`messages/${currentMessageThread}`).update({
+                    lastMessage: text, lastMessageTimestamp: firebase.database.ServerValue.TIMESTAMP,
+                    unreadByAdmin: false, unreadByStudent: true
+                });
+                if (input) input.value = '';
+                openAdminMessageThread(currentMessageThread);
+            } catch (error) {
+                showToast('Error sending reply: ' + error.message, 'error');
+            }
+        }
+
+        document.getElementById('adminSendReplyBtn')?.addEventListener('click', sendAdminReply);
+        document.getElementById('adminReplyInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendAdminReply();
+        });
+
+        async function loadStudentMessages() {
+            if (!currentUser) return;
+            const threadId = currentUser.uid;
+            try {
+                const snap = await db.ref(`messages/${threadId}`).once('value');
+                const thread = snap.val();
+                const convEl = document.getElementById('studentMessageConversation');
+                if (!thread || !thread.messages) {
+                    if (convEl) convEl.innerHTML = '<p class="text-muted text-center py-4"><i class="fas fa-paper-plane me-2"></i>No messages yet. Send a message to admin!</p>';
+                    return;
+                }
+                renderMessagesInContainer(thread.messages, 'student', 'studentMessageConversation');
+                if (thread.unreadByStudent) {
+                    await db.ref(`messages/${threadId}/unreadByStudent`).set(false);
+                    updateStudentMsgBadge();
+                }
+            } catch (error) {
+                console.error('Error loading student messages:', error);
+            }
+        }
+
+        async function sendStudentMessage() {
+            if (!currentUser) return;
+            const input = document.getElementById('studentMsgInput');
+            const text = input?.value?.trim();
+            if (!text) return;
+            const threadId = currentUser.uid;
+            try {
+                const threadSnap = await db.ref(`messages/${threadId}`).once('value');
+                if (!threadSnap.exists()) {
+                    await db.ref(`messages/${threadId}`).set({
+                        studentUid: currentUser.uid,
+                        studentName: currentUser.fullName,
+                        studentRollNo: currentUser.rollNo || '',
+                        createdAt: firebase.database.ServerValue.TIMESTAMP,
+                        lastMessageTimestamp: firebase.database.ServerValue.TIMESTAMP
+                    });
+                }
+                const msgRef = db.ref(`messages/${threadId}/messages`).push();
+                await msgRef.set({
+                    text, from: 'student', fromName: currentUser.fullName, timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                await db.ref(`messages/${threadId}`).update({
+                    lastMessage: text, lastMessageTimestamp: firebase.database.ServerValue.TIMESTAMP,
+                    unreadByAdmin: true, unreadByStudent: false
+                });
+                if (input) input.value = '';
+                loadStudentMessages();
+            } catch (error) {
+                showToast('Error sending message: ' + error.message, 'error');
+            }
+        }
+
+        async function updateStudentMsgBadge() {
+            if (!currentUser) return;
+            try {
+                const snap = await db.ref(`messages/${currentUser.uid}/unreadByStudent`).once('value');
+                const badge = document.getElementById('studentMsgBadge');
+                if (badge) badge.style.display = snap.val() ? 'flex' : 'none';
+            } catch (error) {
+                console.error('Error updating student msg badge:', error);
+            }
+        }
+
+        document.getElementById('openStudentMsgBtn')?.addEventListener('click', function() {
+            document.getElementById('studentMessageModal').style.display = 'flex';
+            loadStudentMessages();
+        });
+        document.getElementById('closeStudentMsgModal')?.addEventListener('click', function() {
+            document.getElementById('studentMessageModal').style.display = 'none';
+        });
+        document.getElementById('studentMessageModal')?.addEventListener('click', function(e) {
+            if (e.target === this) this.style.display = 'none';
+        });
+        document.getElementById('studentSendMsgBtn')?.addEventListener('click', sendStudentMessage);
+        document.getElementById('studentMsgInput')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendStudentMessage();
+        });
 
         // ==================== INIT ====================
         async function init() {
@@ -3342,6 +4050,8 @@
                             
                             renderStudentDashboard();
                             loadAnnouncements();
+                            setTimeout(checkAndShowAnnouncementPopup, 500);
+                            updateStudentMsgBadge();
                         }
                         showToast('Auto-login successful!', 'success');
                     }
