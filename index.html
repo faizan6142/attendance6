@@ -3601,13 +3601,13 @@
         function applyRolePermissions() {
             const isViewOnly = currentUser?.role === 'view_only_admin';
             const badge = document.getElementById('adminRoleBadge');
+            // Reset both role classes before applying new one
+            adminDash.classList.remove('role-view-only', 'role-admin');
             if (isViewOnly) {
                 adminDash.classList.add('role-view-only');
-                adminDash.classList.remove('role-admin');
                 if (badge) { badge.textContent = 'View Only'; badge.className = 'role-badge view-only'; badge.style.display = ''; }
             } else {
                 adminDash.classList.add('role-admin');
-                adminDash.classList.remove('role-view-only');
                 if (badge) { badge.textContent = 'Admin'; badge.className = 'role-badge admin'; badge.style.display = ''; }
             }
         }
