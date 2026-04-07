@@ -534,16 +534,15 @@
         .announcement-card .announcement-title { font-weight: 700; font-size: 1rem; color: #1a1c3a; margin-bottom: 6px; }
         .announcement-card .announcement-body { font-size: 0.9rem; color: #444; white-space: pre-wrap; line-height: 1.6; }
 
-        /* ========== DELETION REQUEST CARDS ========== */
-        .deletion-request-card {
-            border: 1.5px solid var(--border); padding: 16px;
-            border-radius: var(--radius-sm); margin-bottom: 14px;
-            background: white; border-left: 4px solid var(--danger);
-            transition: box-shadow 0.2s;
+        /* ========== ROLE BADGE ========== */
+        .role-badge {
+            font-size: 0.72rem; font-weight: 700; padding: 3px 10px;
+            border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase;
         }
-        .deletion-request-card:hover { box-shadow: var(--shadow-sm); }
-        .deletion-request-card .request-meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
-        .deletion-request-card .request-title { font-weight: 700; color: var(--danger); font-size: 0.98rem; }
+        .role-badge.admin { background: rgba(255,61,113,0.2); color: #ff3d71; border: 1px solid rgba(255,61,113,0.4); }
+        .role-badge.view-only { background: rgba(0,229,255,0.15); color: var(--accent); border: 1px solid rgba(0,229,255,0.35); }
+        /* Hide write-only controls for view-only admin */
+        .role-view-only .admin-write-only { display: none !important; }
 
         /* ========== ANNOUNCEMENT POPUP ========== */
         .announcement-popup-overlay {
@@ -616,13 +615,6 @@
             width: 18px; height: 18px; font-size: 0.65rem; font-weight: 700;
             display: flex; align-items: center; justify-content: center;
         }
-        .approval-ann-card {
-            border: 1.5px solid var(--border); padding: 16px;
-            border-radius: var(--radius-sm); margin-bottom: 14px;
-            background: white; border-left: 4px solid var(--warning);
-            transition: box-shadow 0.2s;
-        }
-        .approval-ann-card:hover { box-shadow: var(--shadow-sm); }
     </style>
 </head>
 <body>
@@ -677,6 +669,7 @@
                 </a>
                 <div class="d-flex align-items-center gap-3">
                     <span class="welcome-text" id="adminWelcome">Welcome, Admin</span>
+                    <span id="adminRoleBadge" class="role-badge admin">Admin</span>
                     <button class="btn btn-nav btn-modern" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
                 </div>
             </div>
@@ -721,12 +714,12 @@
 
             <!-- QUICK ACTIONS -->
             <div class="quick-action-buttons mb-4">
-                <button class="quick-action-btn" id="quickAddDateBtn"><i class="fas fa-calendar-plus fa-2x"></i><span>Add Date</span></button>
-                <button class="quick-action-btn" id="quickDeleteDateBtn"><i class="fas fa-calendar-minus fa-2x"></i><span>Delete Date</span></button>
-                <button class="quick-action-btn" id="quickMarkHolidayBtn"><i class="fas fa-umbrella-beach fa-2x"></i><span>Mark Holiday</span></button>
-                <button class="quick-action-btn" id="quickBulkUpdateBtn"><i class="fas fa-tasks fa-2x"></i><span>Bulk Update</span></button>
+                <button class="quick-action-btn admin-write-only" id="quickAddDateBtn"><i class="fas fa-calendar-plus fa-2x"></i><span>Add Date</span></button>
+                <button class="quick-action-btn admin-write-only" id="quickDeleteDateBtn"><i class="fas fa-calendar-minus fa-2x"></i><span>Delete Date</span></button>
+                <button class="quick-action-btn admin-write-only" id="quickMarkHolidayBtn"><i class="fas fa-umbrella-beach fa-2x"></i><span>Mark Holiday</span></button>
+                <button class="quick-action-btn admin-write-only" id="quickBulkUpdateBtn"><i class="fas fa-tasks fa-2x"></i><span>Bulk Update</span></button>
                 <button class="quick-action-btn" id="quickExportPDFBtn"><i class="fas fa-file-pdf fa-2x"></i><span>Export PDF</span></button>
-                <button class="quick-action-btn" id="quickSendReminderBtn"><i class="fas fa-bell fa-2x"></i><span>Send Reminder</span></button>
+                <button class="quick-action-btn admin-write-only" id="quickSendReminderBtn"><i class="fas fa-bell fa-2x"></i><span>Send Reminder</span></button>
             </div>
 
             <!-- MANAGEMENT TABS -->
@@ -738,7 +731,6 @@
                     <li class="nav-item"><a class="nav-link" href="#attendanceTab" data-bs-toggle="tab">Attendance</a></li>
                     <li class="nav-item"><a class="nav-link" href="#reportsTab" data-bs-toggle="tab">Reports</a></li>
                     <li class="nav-item"><a class="nav-link" href="#announcementsTab" data-bs-toggle="tab" id="announcementsTabLink"><i class="fas fa-bullhorn me-1"></i>Announcements</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#approvalsTab" data-bs-toggle="tab" id="approvalsTabLink"><i class="fas fa-clipboard-check me-1"></i>Pending Approvals <span id="pendingApprovalsCount" class="badge bg-danger ms-1" style="display:none">0</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="#messagesTab" data-bs-toggle="tab" id="messagesTabLink"><i class="fas fa-envelope me-1"></i>Messages <span id="adminMessagesCount" class="badge bg-danger ms-1" style="display:none">0</span></a></li>
                 </ul>
             </div>
@@ -747,7 +739,7 @@
                 <!-- MANAGE USERS TAB -->
                 <div class="tab-pane fade show active" id="manageUsers">
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-5 admin-write-only">
                             <div class="card">
                                 <div class="card-header"><i class="fas fa-user-plus me-2"></i>Add New User</div>
                                 <div class="card-body">
@@ -756,6 +748,7 @@
                                             <label class="form-label">Role</label>
                                             <select class="form-control" id="newUserRole" required>
                                                 <option value="admin">Admin</option>
+                                                <option value="view_only_admin">View-Only Admin</option>
                                                 <option value="student" selected>Student</option>
                                             </select>
                                         </div>
@@ -826,7 +819,7 @@
                 <!-- COURSES & SUBJECTS TAB -->
                 <div class="tab-pane fade" id="coursesTab">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 admin-write-only">
                             <!-- Add Course -->
                             <div class="card">
                                 <div class="card-header"><i class="fas fa-book me-2"></i>Add Course</div>
@@ -877,7 +870,7 @@
                             </div>
                             
                             <!-- Assign Students to Courses -->
-                            <div class="card mt-3">
+                            <div class="card mt-3 admin-write-only">
                                 <div class="card-header"><i class="fas fa-user-graduate me-2"></i>Assign Students to Courses</div>
                                 <div class="card-body">
                                     <div class="row">
@@ -926,7 +919,7 @@
 
                 <!-- ATTENDANCE TAB -->
                 <div class="tab-pane fade" id="attendanceTab">
-                    <div class="row mb-4">
+                    <div class="row mb-4 admin-write-only">
                         <div class="col-md-6">
                             <div class="date-picker-container">
                                 <h5 class="mb-3"><i class="fas fa-plus-circle me-2"></i>Add New Date</h5>
@@ -988,9 +981,9 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span><i class="fas fa-table me-2"></i>Attendance Management</span>
                             <div class="d-flex gap-2">
-                                <input type="date" id="dateSelector" class="form-control date-selector">
-                                <button class="btn btn-light btn-modern" id="markTodayBtn"><i class="fas fa-calendar-check me-2"></i>Today</button>
-                                <button class="btn btn-light btn-modern" id="markAllPresentBtn"><i class="fas fa-check-double me-2"></i>All Present</button>
+                                <input type="date" id="dateSelector" class="form-control date-selector admin-write-only">
+                                <button class="btn btn-light btn-modern admin-write-only" id="markTodayBtn"><i class="fas fa-calendar-check me-2"></i>Today</button>
+                                <button class="btn btn-light btn-modern admin-write-only" id="markAllPresentBtn"><i class="fas fa-check-double me-2"></i>All Present</button>
                                 <button class="btn btn-light btn-modern" id="downloadExcelBtn"><i class="fas fa-file-excel me-2"></i>Export</button>
                                 <button class="btn btn-light btn-modern" id="refreshTableBtn"><i class="fas fa-sync-alt me-2"></i>Refresh</button>
                             </div>
@@ -1057,7 +1050,7 @@
                 <!-- ANNOUNCEMENTS TAB -->
                 <div class="tab-pane fade" id="announcementsTab">
                     <div class="row">
-                        <div class="col-md-5">
+                        <div class="col-md-5 admin-write-only">
                             <div class="card">
                                 <div class="card-header"><i class="fas fa-bullhorn me-2"></i>Send Announcement</div>
                                 <div class="card-body">
@@ -1087,29 +1080,6 @@
                     </div>
                 </div>
 
-                <!-- PENDING APPROVALS TAB -->
-                <div class="tab-pane fade" id="approvalsTab">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span><i class="fas fa-clipboard-check me-2"></i>Pending Deletion Requests</span>
-                            <button class="btn btn-sm btn-outline-light" onclick="loadDeletionRequests()"><i class="fas fa-sync-alt"></i></button>
-                        </div>
-                        <div class="card-body" id="deletionRequestsList">
-                            <p class="text-muted text-center py-4"><i class="fas fa-check-circle me-2"></i>No pending deletion requests.</p>
-                        </div>
-                    </div>
-                    <!-- Pending Announcement Approvals -->
-                    <div class="card mt-3">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span><i class="fas fa-bullhorn me-2"></i>Pending Announcement Approvals</span>
-                            <button class="btn btn-sm btn-outline-light" onclick="loadAnnouncementApprovals()"><i class="fas fa-sync-alt"></i></button>
-                        </div>
-                        <div class="card-body" id="announcementApprovalsList">
-                            <p class="text-muted text-center py-4"><i class="fas fa-check-circle me-2"></i>No pending announcement approvals.</p>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- MESSAGES TAB -->
                 <div class="tab-pane fade" id="messagesTab">
                     <div class="row">
@@ -1132,42 +1102,10 @@
                                 <div class="messages-scroll-area" id="adminMessageConversation">
                                     <p class="text-muted text-center py-4">Select a thread from the left to view the conversation.</p>
                                 </div>
-                                <div id="adminReplyArea" style="display:none;" class="message-input-area">
+                                <div id="adminReplyArea" style="display:none;" class="message-input-area admin-write-only">
                                     <div class="d-flex gap-2">
                                         <input type="text" class="form-control" id="adminReplyInput" placeholder="Type your reply...">
                                         <button class="btn btn-primary btn-modern" id="adminSendReplyBtn"><i class="fas fa-paper-plane"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Access Token Management -->
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-header"><i class="fas fa-key me-2"></i>Access Token Management <small class="ms-2 opacity-75">(Super Admin)</small></div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-5">
-                                            <label class="form-label">Create New Access Token</label>
-                                            <input type="text" class="form-control mb-2" id="newTokenDesc" placeholder="Description (e.g., For Admin John)">
-                                            <button class="btn btn-warning btn-modern" id="createTokenBtn"><i class="fas fa-plus me-2"></i>Generate Token</button>
-                                        </div>
-                                        <div class="col-md-7">
-                                            <label class="form-label">Active Tokens</label>
-                                            <div id="tokensList" style="max-height:180px;overflow-y:auto;">
-                                                <p class="text-muted text-center py-2">No active tokens.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mt-3 p-3 rounded border" style="background:var(--light);">
-                                        <label class="form-label"><i class="fas fa-unlock-alt me-2 text-primary"></i>Enter Your Access Token <small class="text-muted">(bypasses approval requirement)</small></label>
-                                        <div class="d-flex gap-2">
-                                            <input type="password" class="form-control" id="accessTokenInput" placeholder="Paste token here...">
-                                            <button class="btn btn-outline-primary" id="validateTokenBtn"><i class="fas fa-check me-1"></i>Validate</button>
-                                        </div>
-                                        <div id="tokenStatus" class="mt-2" style="font-size:0.85rem;font-weight:600;"></div>
                                     </div>
                                 </div>
                             </div>
@@ -1856,17 +1794,8 @@
                 await loadAllData();
                 loginSection.style.display = 'none';
                 
-                if (currentUser.role === 'admin') {
-                    adminDash.style.display = 'block';
-                    adminWelcome.textContent = `Welcome, ${currentUser.fullName}`;
-                    loadCoursesForDropdowns();
-                    displayCourseStructure();
-                    initAttendanceDropdowns();
-                    renderUsersList();
-                    const currentSubject = document.getElementById('attendanceSubject')?.value;
-                    updateStats(currentSubject || null);
-                    loadPendingRequestsCount();
-                    loadAnnouncements();
+                if (currentUser.role === 'admin' || currentUser.role === 'view_only_admin') {
+                    showAdminDashboard();
                 } else {
                     studentDash.style.display = 'block';
                     studentWelcome.textContent = `Welcome, ${currentUser.fullName}`;
@@ -1939,6 +1868,7 @@
 
         // ==================== COURSE MANAGEMENT ====================
         window.addCourse = async function() {
+            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const name = document.getElementById('courseName').value;
             const code = document.getElementById('courseCode').value;
             if (!name || !code) {
@@ -1961,6 +1891,7 @@
         }
 
         window.addSemester = async function() {
+            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const courseId = document.getElementById('semesterCourse').value;
             const name = document.getElementById('semesterName').value;
             if (!courseId || !name) {
@@ -1999,6 +1930,7 @@
         }
 
         window.addSubject = async function() {
+            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const courseId = document.getElementById('subjectCourse').value;
             const semesterId = document.getElementById('subjectSemester').value;
             const name = document.getElementById('subjectName').value;
@@ -2045,6 +1977,7 @@
         }
 
         window.editCourse = function(courseId) {
+            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const course = courses[courseId];
             const newName = prompt('Enter new course name:', course.name);
             const newCode = prompt('Enter new course code:', course.code);
@@ -2064,14 +1997,24 @@
         }
 
         window.deleteCourse = async function(courseId) {
+            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const course = courses[courseId];
             const courseName = course?.name || courseId;
-            if (!confirm(`Request deletion of course "${courseName}"?\n\nThis requires approval from another admin before it is executed.`)) return;
-            await createDeletionRequest('course', courseId, courseName, { courseName: course?.name, courseCode: course?.code });
-            showToast('Deletion request submitted. Another admin must approve it.', 'warning');
+            if (!confirm(`Delete course "${courseName}"? This action cannot be undone.`)) return;
+            try {
+                await db.ref('courses/' + courseId).remove();
+                showToast('Course deleted', 'success');
+                await loadAllData();
+                loadCoursesForDropdowns();
+                displayCourseStructure();
+                updateStats();
+            } catch (error) {
+                showToast('Error deleting course: ' + error.message, 'error');
+            }
         }
 
         window.editSemester = function(courseId, semesterId) {
+            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const semester = courses[courseId]?.semesters[semesterId];
             const newName = prompt('Enter new semester name:', semester.name);
             
@@ -2089,14 +2032,23 @@
         }
 
         window.deleteSemester = async function(courseId, semesterId) {
+            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const semester = courses[courseId]?.semesters[semesterId];
             const semName = semester?.name || semesterId;
-            if (!confirm(`Request deletion of semester "${semName}"?\n\nThis requires approval from another admin before it is executed.`)) return;
-            await createDeletionRequest('semester', semesterId, semName, { courseId, semesterName: semester?.name });
-            showToast('Deletion request submitted. Another admin must approve it.', 'warning');
+            if (!confirm(`Delete semester "${semName}"? This action cannot be undone.`)) return;
+            try {
+                await db.ref(`courses/${courseId}/semesters/${semesterId}`).remove();
+                showToast('Semester deleted', 'success');
+                await loadAllData();
+                loadCoursesForDropdowns();
+                displayCourseStructure();
+            } catch (error) {
+                showToast('Error deleting semester: ' + error.message, 'error');
+            }
         }
 
         window.editSubject = function(courseId, semesterId, subjectId) {
+            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const subject = courses[courseId]?.semesters[semesterId]?.subjects[subjectId];
             const newName = prompt('Enter new subject name:', subject.name);
             const newCode = prompt('Enter new subject code:', subject.code);
@@ -2118,11 +2070,19 @@
         }
 
         window.deleteSubject = async function(courseId, semesterId, subjectId) {
+            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const subject = courses[courseId]?.semesters[semesterId]?.subjects[subjectId];
             const subjectName = subject?.name || subjectId;
-            if (!confirm(`Request deletion of subject "${subjectName}"?\n\nThis requires approval from another admin before it is executed.`)) return;
-            await createDeletionRequest('subject', subjectId, subjectName, { courseId, semesterId, subjectName: subject?.name });
-            showToast('Deletion request submitted. Another admin must approve it.', 'warning');
+            if (!confirm(`Delete subject "${subjectName}"? This action cannot be undone.`)) return;
+            try {
+                await db.ref(`courses/${courseId}/semesters/${semesterId}/subjects/${subjectId}`).remove();
+                showToast('Subject deleted', 'success');
+                await loadAllData();
+                loadCoursesForDropdowns();
+                displayCourseStructure();
+            } catch (error) {
+                showToast('Error deleting subject: ' + error.message, 'error');
+            }
         }
 
         function displayCourseStructure() {
@@ -2131,36 +2091,37 @@
                 document.getElementById('courseStructure').innerHTML = '<p class="text-muted text-center">No courses added yet. Click "Add Course" to get started.</p>';
                 return;
             }
+            const isAdmin = currentUser?.role === 'admin';
             
             Object.entries(courses).forEach(([courseId, course]) => {
                 html += `<div class="course-item">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5><strong>${course.name}</strong> (${course.code})</h5>
-                        <div class="action-buttons">
+                        <h5><strong>${escapeHtml(course.name)}</strong> (${escapeHtml(course.code)})</h5>
+                        ${isAdmin ? `<div class="action-buttons">
                             <button class="btn btn-sm btn-outline-primary" onclick="editCourse('${courseId}')"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-sm btn-outline-danger" onclick="deleteCourse('${courseId}')"><i class="fas fa-trash"></i></button>
-                        </div>
+                        </div>` : ''}
                     </div>`;
                 
                 if (course.semesters && Object.keys(course.semesters).length > 0) {
                     Object.entries(course.semesters).forEach(([semId, sem]) => {
                         html += `<div class="semester-item">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h6>📚 ${sem.name}</h6>
-                                <div class="action-buttons">
+                                <h6>📚 ${escapeHtml(sem.name)}</h6>
+                                ${isAdmin ? `<div class="action-buttons">
                                     <button class="btn btn-sm btn-outline-primary" onclick="editSemester('${courseId}', '${semId}')"><i class="fas fa-edit"></i></button>
                                     <button class="btn btn-sm btn-outline-danger" onclick="deleteSemester('${courseId}', '${semId}')"><i class="fas fa-trash"></i></button>
-                                </div>
+                                </div>` : ''}
                             </div>`;
                         
                         if (sem.subjects && Object.keys(sem.subjects).length > 0) {
                             Object.entries(sem.subjects).forEach(([subId, sub]) => {
                                 html += `<div class="subject-item">
-                                    <span>📖 ${sub.name} (${sub.code}) - ${sub.credits} credits</span>
-                                    <div class="action-buttons">
+                                    <span>📖 ${escapeHtml(sub.name)} (${escapeHtml(sub.code)}) - ${sub.credits} credits</span>
+                                    ${isAdmin ? `<div class="action-buttons">
                                         <button class="btn btn-sm btn-outline-primary" onclick="editSubject('${courseId}', '${semId}', '${subId}')"><i class="fas fa-edit"></i></button>
                                         <button class="btn btn-sm btn-outline-danger" onclick="deleteSubject('${courseId}', '${semId}', '${subId}')"><i class="fas fa-trash"></i></button>
-                                    </div>
+                                    </div>` : ''}
                                 </div>`;
                             });
                         } else {
@@ -2239,6 +2200,7 @@
         }
 
         window.assignStudentToCourse = async function() {
+            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const studentRoll = document.getElementById('assignStudent').value;
             const courseId = document.getElementById('assignCourse').value;
             const semesterId = document.getElementById('assignSemester').value;
@@ -3057,7 +3019,7 @@
             cloudSyncBtn.addEventListener('click', async () => {
                 await loadAllData();
                 if (currentUser) {
-                    if (currentUser.role === 'admin') { 
+                    if (currentUser.role === 'admin' || currentUser.role === 'view_only_admin') { 
                         loadCoursesForDropdowns();
                         displayCourseStructure();
                         initAttendanceDropdowns();
@@ -3132,16 +3094,19 @@
             users = snap.val() || {};
             const tbody = document.getElementById('usersList');
             tbody.innerHTML = '';
+            const isAdmin = currentUser?.role === 'admin';
             
             Object.entries(users).forEach(([uid, u]) => {
+                const roleBadgeClass = u.role === 'admin' ? 'bg-danger' : u.role === 'view_only_admin' ? 'bg-info' : 'bg-primary';
+                const roleLabel = u.role === 'view_only_admin' ? 'View-Only' : u.role;
                 tbody.innerHTML += `<tr>
                     <td>${u.email}</td>
-                    <td><span class="badge ${u.role==='admin'?'bg-danger':'bg-primary'}">${u.role}</span></td>
-                    <td>${u.fullName}</td>
+                    <td><span class="badge ${roleBadgeClass}">${escapeHtml(roleLabel)}</span></td>
+                    <td>${escapeHtml(u.fullName)}</td>
                     <td>${u.rollNo || '-'}</td>
                     <td>
-                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('${uid}')"><i class="fas fa-key"></i></button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('${uid}')"><i class="fas fa-trash"></i></button>
+                        ${isAdmin ? `<button class="btn btn-sm btn-outline-warning" onclick="resetPassword('${uid}')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('${uid}')"><i class="fas fa-trash"></i></button>` : ''}
                     </td>
                 </tr>`;
             });
@@ -3160,12 +3125,17 @@
 
         window.deleteUser = async (uid) => {
             if (uid === currentUser?.uid) { showToast('Cannot delete yourself', 'error'); return; }
+            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const userData = users[uid];
             const userName = userData?.fullName || uid;
-            if (!confirm(`Request deletion of user "${userName}"?\n\nThis requires approval from another admin before it is executed.`)) return;
+            if (!confirm(`Delete user "${userName}"? This action cannot be undone.`)) return;
             try {
-                await createDeletionRequest('user', uid, userName, { rollNo: userData?.rollNo, role: userData?.role });
-                showToast('Deletion request submitted. Another admin must approve it.', 'warning');
+                if (userData?.rollNo) await db.ref('students/' + userData.rollNo).remove();
+                await db.ref('users/' + uid).remove();
+                showToast('User deleted', 'success');
+                await loadAllData();
+                renderUsersList();
+                updateStats();
             } catch (error) {
                 showToast(error.message, 'error');
             }
@@ -3225,208 +3195,25 @@
             });
         }
 
-        // ==================== DELETION REQUEST SYSTEM ====================
-        async function createDeletionRequest(type, targetId, targetName, extraData) {
-            if (!currentUser) { showToast('You must be logged in to request a deletion', 'error'); return; }
-            const request = Object.assign({
-                type,
-                targetId,
-                targetName,
-                requestedBy: currentUser.uid,
-                requestedByName: currentUser.fullName,
-                timestamp: Date.now(),
-                status: 'pending'
-            }, extraData || {});
-            await db.ref('deletionRequests').push(request);
-            loadPendingRequestsCount();
-        }
-
-        async function loadPendingRequestsCount() {
-            try {
-                const [snap1, snap2] = await Promise.all([
-                    db.ref('deletionRequests').orderByChild('status').equalTo('pending').once('value'),
-                    db.ref('announcementApprovals').orderByChild('status').equalTo('pending').once('value')
-                ]);
-                const count = snap1.numChildren() + snap2.numChildren();
-                const countEl = document.getElementById('pendingApprovalsCount');
-                if (countEl) {
-                    if (count > 0) {
-                        countEl.textContent = count;
-                        countEl.style.display = 'inline';
-                    } else {
-                        countEl.style.display = 'none';
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading pending requests count:', error);
-            }
-        }
-
-        window.loadDeletionRequests = async function() {
-            try {
-                const snap = await db.ref('deletionRequests').orderByChild('status').equalTo('pending').once('value');
-                const requests = snap.val() || {};
-                const container = document.getElementById('deletionRequestsList');
-                if (!container) return;
-
-                if (Object.keys(requests).length === 0) {
-                    container.innerHTML = '<p class="text-muted text-center py-4"><i class="fas fa-check-circle me-2"></i>No pending deletion requests.</p>';
-                    return;
-                }
-
-                const sorted = Object.entries(requests).sort((a, b) => b[1].timestamp - a[1].timestamp);
-                let html = '';
-                sorted.forEach(([reqId, req]) => {
-                    const date = new Date(req.timestamp).toLocaleString();
-                    const typeLabel = { course: 'Course', semester: 'Semester', subject: 'Subject', user: 'User' }[req.type] || 'Unknown';
-                    const canApprove = req.requestedBy !== currentUser?.uid;
-                    let extraInfo = '';
-                    if (req.type === 'semester' && req.courseId) {
-                        extraInfo = `<div class="request-meta"><i class="fas fa-book me-1"></i>In course: <strong>${escapeHtml(courses[req.courseId]?.name || req.courseId)}</strong></div>`;
-                    } else if (req.type === 'subject' && req.courseId) {
-                        const courseName = escapeHtml(courses[req.courseId]?.name || req.courseId);
-                        const semName = escapeHtml(courses[req.courseId]?.semesters?.[req.semesterId]?.name || req.semesterId);
-                        extraInfo = `<div class="request-meta"><i class="fas fa-book me-1"></i>In: <strong>${courseName} / ${semName}</strong></div>`;
-                    } else if (req.type === 'user') {
-                        extraInfo = `<div class="request-meta"><i class="fas fa-id-card me-1"></i>Role: <strong>${escapeHtml(req.role || 'unknown')}</strong>${req.rollNo ? ` &bull; Roll: <strong>${escapeHtml(req.rollNo)}</strong>` : ''}</div>`;
-                    }
-                    html += `<div class="deletion-request-card">
-                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                            <div>
-                                <div class="request-title"><i class="fas fa-trash me-2"></i>Delete ${typeLabel}: <strong>${escapeHtml(req.targetName)}</strong></div>
-                                <div class="request-meta mt-1"><i class="fas fa-user me-1"></i>Requested by <strong>${escapeHtml(req.requestedByName)}</strong> &bull; ${escapeHtml(date)}</div>
-                                ${extraInfo}
-                            </div>
-                            <div class="d-flex gap-2 align-items-center flex-wrap">
-                                ${canApprove
-                                    ? `<button class="btn btn-success btn-sm" onclick="approveDeletion('${reqId}')"><i class="fas fa-check me-1"></i>Approve</button>
-                                       <button class="btn btn-secondary btn-sm" onclick="rejectDeletion('${reqId}')"><i class="fas fa-times me-1"></i>Reject</button>`
-                                    : `<span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Awaiting another admin</span>
-                                       <button class="btn btn-outline-danger btn-sm" onclick="cancelDeletionRequest('${reqId}')"><i class="fas fa-ban me-1"></i>Cancel</button>`}
-                            </div>
-                        </div>
-                    </div>`;
-                });
-                container.innerHTML = html;
-            } catch (error) {
-                console.error('Error loading deletion requests:', error);
-                showToast('Error loading deletion requests', 'error');
-            }
-        }
-
-        window.approveDeletion = async function(reqId) {
-            if (!confirm('Approve this deletion? This action cannot be undone.')) return;
-            try {
-                const snap = await db.ref('deletionRequests/' + reqId).once('value');
-                const req = snap.val();
-                if (!req || req.status !== 'pending') { showToast('Request no longer available', 'error'); return; }
-                if (req.requestedBy === currentUser?.uid) { showToast('You cannot approve your own deletion request', 'error'); return; }
-
-                switch (req.type) {
-                    case 'course':
-                        await db.ref('courses/' + req.targetId).remove();
-                        break;
-                    case 'semester':
-                        await db.ref(`courses/${req.courseId}/semesters/${req.targetId}`).remove();
-                        break;
-                    case 'subject':
-                        await db.ref(`courses/${req.courseId}/semesters/${req.semesterId}/subjects/${req.targetId}`).remove();
-                        break;
-                    case 'user':
-                        if (req.rollNo) await db.ref('students/' + req.rollNo).remove();
-                        await db.ref('users/' + req.targetId).remove();
-                        break;
-                }
-
-                await db.ref('deletionRequests/' + reqId).update({
-                    status: 'approved',
-                    approvedBy: currentUser.uid,
-                    approvedByName: currentUser.fullName,
-                    approvedAt: Date.now()
-                });
-
-                showToast('Deletion approved and executed successfully', 'success');
-                await loadAllData();
-                loadCoursesForDropdowns();
-                displayCourseStructure();
-                renderUsersList();
-                loadDeletionRequests();
-                loadPendingRequestsCount();
-                updateStats();
-            } catch (error) {
-                showToast('Error approving deletion: ' + error.message, 'error');
-                console.error('Approve deletion error:', error);
-            }
-        }
-
-        window.rejectDeletion = async function(reqId) {
-            if (!confirm('Reject this deletion request?')) return;
-            try {
-                await db.ref('deletionRequests/' + reqId).update({
-                    status: 'rejected',
-                    rejectedBy: currentUser.uid,
-                    rejectedByName: currentUser.fullName,
-                    rejectedAt: Date.now()
-                });
-                showToast('Deletion request rejected', 'success');
-                loadDeletionRequests();
-                loadPendingRequestsCount();
-            } catch (error) {
-                showToast('Error rejecting deletion: ' + error.message, 'error');
-            }
-        }
-
-        window.cancelDeletionRequest = async function(reqId) {
-            if (!confirm('Cancel your deletion request?')) return;
-            try {
-                await db.ref('deletionRequests/' + reqId).update({
-                    status: 'cancelled',
-                    cancelledBy: currentUser.uid,
-                    cancelledAt: Date.now()
-                });
-                showToast('Deletion request cancelled', 'success');
-                loadDeletionRequests();
-                loadPendingRequestsCount();
-            } catch (error) {
-                showToast('Error cancelling request: ' + error.message, 'error');
-            }
-        }
-
         // ==================== ANNOUNCEMENT SYSTEM ====================
         window.sendAnnouncement = async function() {
+            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const title = document.getElementById('announcementTitle')?.value?.trim();
             const message = document.getElementById('announcementMessage')?.value?.trim();
             if (!title) { showToast('Please enter a title', 'error'); return; }
             if (!message) { showToast('Please enter a message', 'error'); return; }
             try {
-                if (currentAdminToken) {
-                    // Admin has a valid token — send directly
-                    await db.ref('announcements').push({
-                        title,
-                        message,
-                        sentBy: currentUser.uid,
-                        sentByName: currentUser.fullName,
-                        timestamp: Date.now()
-                    });
-                    document.getElementById('announcementTitle').value = '';
-                    document.getElementById('announcementMessage').value = '';
-                    showToast('Announcement sent to all students!', 'success');
-                    loadAnnouncements();
-                } else {
-                    // No token — create approval request
-                    await db.ref('announcementApprovals').push({
-                        title,
-                        message,
-                        requestedBy: currentUser.uid,
-                        requestedByName: currentUser.fullName,
-                        timestamp: Date.now(),
-                        status: 'pending'
-                    });
-                    document.getElementById('announcementTitle').value = '';
-                    document.getElementById('announcementMessage').value = '';
-                    showToast('Announcement submitted for approval. Another admin must approve it before students see it.', 'warning');
-                    loadPendingRequestsCount();
-                }
+                await db.ref('announcements').push({
+                    title,
+                    message,
+                    sentBy: currentUser.uid,
+                    sentByName: currentUser.fullName,
+                    timestamp: Date.now()
+                });
+                document.getElementById('announcementTitle').value = '';
+                document.getElementById('announcementMessage').value = '';
+                showToast('Announcement sent to all students!', 'success');
+                loadAnnouncements();
             } catch (error) {
                 showToast('Error sending announcement: ' + error.message, 'error');
             }
@@ -3437,6 +3224,7 @@
                 const snap = await db.ref('announcements').orderByChild('timestamp').once('value');
                 const announcementsData = snap.val() || {};
                 const sorted = Object.entries(announcementsData).sort((a, b) => b[1].timestamp - a[1].timestamp);
+                const isAdmin = currentUser?.role === 'admin';
 
                 const adminContainer = document.getElementById('adminAnnouncementsList');
                 if (adminContainer) {
@@ -3449,7 +3237,7 @@
                                 <div class="announcement-meta"><i class="fas fa-user-tie me-1"></i><strong>${escapeHtml(ann.sentByName)}</strong> &bull; ${escapeHtml(date)}</div>
                                 <div class="announcement-title">${escapeHtml(ann.title)}</div>
                                 <div class="announcement-body">${escapeHtml(ann.message)}</div>
-                                <button class="btn btn-sm btn-outline-danger mt-2" onclick="deleteAnnouncement('${id}')"><i class="fas fa-trash me-1"></i>Delete</button>
+                                ${isAdmin ? `<button class="btn btn-sm btn-outline-danger mt-2" onclick="deleteAnnouncement('${id}')"><i class="fas fa-trash me-1"></i>Delete</button>` : ''}
                             </div>`;
                         }).join('');
                     }
@@ -3476,6 +3264,7 @@
         }
 
         window.deleteAnnouncement = async function(annId) {
+            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             if (!confirm('Delete this announcement?')) return;
             try {
                 await db.ref('announcements/' + annId).remove();
@@ -3487,15 +3276,8 @@
         }
 
         // Tab click listeners for lazy-loading
-        document.getElementById('approvalsTabLink')?.addEventListener('shown.bs.tab', function() {
-            loadDeletionRequests();
-            loadAnnouncementApprovals();
-        });
         document.getElementById('announcementsTabLink')?.addEventListener('shown.bs.tab', loadAnnouncements);
-        document.getElementById('messagesTabLink')?.addEventListener('shown.bs.tab', function() {
-            loadMessageThreads();
-            loadTokensList();
-        });
+        document.getElementById('messagesTabLink')?.addEventListener('shown.bs.tab', loadMessageThreads);
 
         // ==================== SMART ANNOUNCEMENT POPUP ====================
         async function checkAndShowAnnouncementPopup() {
@@ -3584,227 +3366,11 @@
             }
         });
 
-        // ==================== ANNOUNCEMENT APPROVALS ====================
-        window.loadAnnouncementApprovals = async function() {
-            try {
-                const snap = await db.ref('announcementApprovals').orderByChild('status').equalTo('pending').once('value');
-                const approvals = snap.val() || {};
-                const container = document.getElementById('announcementApprovalsList');
-                if (!container) return;
-
-                if (Object.keys(approvals).length === 0) {
-                    container.innerHTML = '<p class="text-muted text-center py-4"><i class="fas fa-check-circle me-2"></i>No pending announcement approvals.</p>';
-                    return;
-                }
-
-                const sorted = Object.entries(approvals).sort((a, b) => b[1].timestamp - a[1].timestamp);
-                let html = '';
-                sorted.forEach(([reqId, req]) => {
-                    const date = new Date(req.timestamp).toLocaleString();
-                    const canApprove = req.requestedBy !== currentUser?.uid;
-                    html += `<div class="approval-ann-card">
-                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                            <div>
-                                <div style="font-weight:700;color:var(--warning);font-size:0.98rem;"><i class="fas fa-bullhorn me-2"></i>${escapeHtml(req.title)}</div>
-                                <div style="font-size:0.82rem;color:var(--text-muted);margin-top:4px;"><i class="fas fa-user me-1"></i>By <strong>${escapeHtml(req.requestedByName)}</strong> &bull; ${escapeHtml(date)}</div>
-                                <div style="margin-top:8px;font-size:0.88rem;color:#555;white-space:pre-wrap;max-height:80px;overflow:hidden;">${escapeHtml(req.message)}</div>
-                            </div>
-                            <div class="d-flex gap-2 align-items-center flex-wrap">
-                                ${canApprove
-                                    ? `<button class="btn btn-success btn-sm" onclick="approveAnnouncement('${reqId}')"><i class="fas fa-check me-1"></i>Approve &amp; Send</button>
-                                       <button class="btn btn-secondary btn-sm" onclick="rejectAnnouncement('${reqId}')"><i class="fas fa-times me-1"></i>Reject</button>`
-                                    : `<span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Awaiting another admin</span>
-                                       <button class="btn btn-outline-danger btn-sm" onclick="cancelAnnouncementRequest('${reqId}')"><i class="fas fa-ban me-1"></i>Cancel</button>`}
-                            </div>
-                        </div>
-                    </div>`;
-                });
-                container.innerHTML = html;
-            } catch (error) {
-                console.error('Error loading announcement approvals:', error);
-            }
-        }
-
-        window.approveAnnouncement = async function(reqId) {
-            if (!confirm('Approve and send this announcement to all students?')) return;
-            try {
-                const snap = await db.ref('announcementApprovals/' + reqId).once('value');
-                const req = snap.val();
-                if (!req || req.status !== 'pending') { showToast('Request no longer available', 'error'); return; }
-                if (req.requestedBy === currentUser?.uid) { showToast('You cannot approve your own announcement request', 'error'); return; }
-
-                await db.ref('announcements').push({
-                    title: req.title,
-                    message: req.message,
-                    sentBy: req.requestedBy,
-                    sentByName: req.requestedByName,
-                    timestamp: Date.now(),
-                    approvedBy: currentUser.uid,
-                    approvedByName: currentUser.fullName
-                });
-
-                await db.ref('announcementApprovals/' + reqId).update({
-                    status: 'approved',
-                    approvedBy: currentUser.uid,
-                    approvedByName: currentUser.fullName,
-                    approvedAt: Date.now()
-                });
-
-                showToast('Announcement approved and sent to all students!', 'success');
-                loadAnnouncementApprovals();
-                loadPendingRequestsCount();
-                loadAnnouncements();
-            } catch (error) {
-                showToast('Error approving announcement: ' + error.message, 'error');
-            }
-        }
-
-        window.rejectAnnouncement = async function(reqId) {
-            if (!confirm('Reject this announcement request?')) return;
-            try {
-                await db.ref('announcementApprovals/' + reqId).update({
-                    status: 'rejected',
-                    rejectedBy: currentUser.uid,
-                    rejectedByName: currentUser.fullName,
-                    rejectedAt: Date.now()
-                });
-                showToast('Announcement request rejected', 'success');
-                loadAnnouncementApprovals();
-                loadPendingRequestsCount();
-            } catch (error) {
-                showToast('Error rejecting announcement: ' + error.message, 'error');
-            }
-        }
-
-        window.cancelAnnouncementRequest = async function(reqId) {
-            if (!confirm('Cancel your announcement request?')) return;
-            try {
-                await db.ref('announcementApprovals/' + reqId).update({
-                    status: 'cancelled',
-                    cancelledBy: currentUser.uid,
-                    cancelledAt: Date.now()
-                });
-                showToast('Announcement request cancelled', 'success');
-                loadAnnouncementApprovals();
-                loadPendingRequestsCount();
-            } catch (error) {
-                showToast('Error cancelling request: ' + error.message, 'error');
-            }
-        }
-
-        // ==================== ACCESS TOKEN MANAGEMENT ====================
-        let currentAdminToken = null;
-
-        window.loadTokensList = async function() {
-            try {
-                const snap = await db.ref('admin_tokens').orderByChild('active').equalTo(true).once('value');
-                const tokens = snap.val() || {};
-                const container = document.getElementById('tokensList');
-                if (!container) return;
-
-                const entries = Object.entries(tokens);
-                if (entries.length === 0) {
-                    container.innerHTML = '<p class="text-muted text-center py-2">No active tokens.</p>';
-                    return;
-                }
-
-                let html = `<table class="table table-sm mb-0">
-                    <thead><tr><th>Description</th><th>Token</th><th>Created</th><th></th></tr></thead><tbody>`;
-                entries.forEach(([id, t]) => {
-                    const date = new Date(t.createdAt).toLocaleDateString();
-                    html += `<tr>
-                        <td>${escapeHtml(t.description)}</td>
-                        <td><code style="font-size:0.78rem;">${escapeHtml(t.token)}</code></td>
-                        <td style="font-size:0.78rem;white-space:nowrap;">${date}</td>
-                        <td><button class="btn btn-sm btn-outline-danger" onclick="revokeToken('${id}')"><i class="fas fa-ban"></i></button></td>
-                    </tr>`;
-                });
-                html += '</tbody></table>';
-                container.innerHTML = html;
-            } catch (error) {
-                console.error('Error loading tokens:', error);
-            }
-        }
-
-        document.getElementById('createTokenBtn')?.addEventListener('click', async function() {
-            const desc = document.getElementById('newTokenDesc')?.value?.trim();
-            if (!desc) { showToast('Enter a description for the token', 'error'); return; }
-            const bytes = new Uint8Array(16);
-            crypto.getRandomValues(bytes);
-            const token = 'TK-' + Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase().slice(0, 12) +
-                          '-' + Date.now().toString(36).toUpperCase();
-            try {
-                await db.ref('admin_tokens').push({
-                    token, description: desc,
-                    createdBy: currentUser.uid,
-                    createdByName: currentUser.fullName,
-                    createdAt: Date.now(), active: true
-                });
-                document.getElementById('newTokenDesc').value = '';
-                showToast('Token created: ' + token + ' — Copy it now!', 'success');
-                loadTokensList();
-            } catch (error) {
-                showToast('Error creating token: ' + error.message, 'error');
-            }
-        });
-
-        window.revokeToken = async function(tokenId) {
-            if (!confirm('Revoke this token? Admins using it will lose bypass access.')) return;
-            try {
-                await db.ref(`admin_tokens/${tokenId}/active`).set(false);
-                if (currentAdminToken) {
-                    // Clear session token since it might have been this one
-                    currentAdminToken = null;
-                    const statusEl = document.getElementById('tokenStatus');
-                    if (statusEl) { statusEl.textContent = ''; }
-                    const input = document.getElementById('accessTokenInput');
-                    if (input) input.value = '';
-                }
-                showToast('Token revoked', 'success');
-                loadTokensList();
-            } catch (error) {
-                showToast('Error revoking token: ' + error.message, 'error');
-            }
-        }
-
-        document.getElementById('validateTokenBtn')?.addEventListener('click', async function() {
-            const inputToken = document.getElementById('accessTokenInput')?.value?.trim();
-            const statusEl = document.getElementById('tokenStatus');
-            if (!inputToken) {
-                if (statusEl) { statusEl.textContent = 'Please enter a token'; statusEl.style.color = 'var(--danger)'; }
-                return;
-            }
-            try {
-                const snap = await db.ref('admin_tokens').orderByChild('token').equalTo(inputToken).once('value');
-                const tokens = snap.val();
-                if (!tokens) {
-                    currentAdminToken = null;
-                    if (statusEl) { statusEl.textContent = '\u2717 Invalid token'; statusEl.style.color = 'var(--danger)'; }
-                    return;
-                }
-                const validEntry = Object.entries(tokens).find(([id, t]) => t.active);
-                if (!validEntry) {
-                    currentAdminToken = null;
-                    if (statusEl) { statusEl.textContent = '\u2717 Token has been revoked'; statusEl.style.color = 'var(--danger)'; }
-                    return;
-                }
-                currentAdminToken = inputToken;
-                if (statusEl) {
-                    statusEl.textContent = '\u2713 Token valid (' + escapeHtml(validEntry[1].description) + ') \u2014 Approval bypass active';
-                    statusEl.style.color = 'var(--success)';
-                }
-                showToast('Access token validated! Elevated privileges active.', 'success');
-            } catch (error) {
-                if (statusEl) { statusEl.textContent = 'Error validating token'; statusEl.style.color = 'var(--danger)'; }
-                console.error('Token validation error:', error);
-            }
-        });
-
         // ==================== MESSAGING SYSTEM ====================
         let currentMessageThread = null;
 
         async function loadMessageThreads() {
-            if (!currentUser || currentUser.role !== 'admin') return;
+            if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'view_only_admin')) return;
             try {
                 const snap = await db.ref('messages').orderByChild('lastMessageTimestamp').once('value');
                 const threads = snap.val() || {};
@@ -3867,32 +3433,39 @@
                         `<i class="fas fa-user me-2"></i>Conversation with <strong>${escapeHtml(thread.studentName)}</strong>`;
                 }
 
-                document.getElementById('adminReplyArea').style.display = 'block';
-                renderMessagesInContainer(thread.messages || {}, 'admin', 'adminMessageConversation');
+                document.getElementById('adminReplyArea').style.display = currentUser?.role === 'admin' ? 'block' : 'none';
+                renderMessagesInContainer(thread.messages || {}, 'admin', 'adminMessageConversation', threadId);
                 loadMessageThreads();
             } catch (error) {
                 console.error('Error opening message thread:', error);
             }
         }
 
-        function renderMessagesInContainer(messages, viewerRole, containerId) {
+        function renderMessagesInContainer(messages, viewerRole, containerId, threadId) {
             const container = document.getElementById(containerId);
             if (!container) return;
-            const sorted = Object.values(messages).sort((a, b) => a.timestamp - b.timestamp);
+            const sorted = Object.entries(messages).sort((a, b) => a[1].timestamp - b[1].timestamp);
             if (sorted.length === 0) {
                 container.innerHTML = '<p class="text-muted text-center py-4">No messages yet. Start the conversation!</p>';
                 return;
             }
+            const isAdmin = currentUser?.role === 'admin';
+            const isStudent = currentUser?.role === 'student';
             let html = '';
-            sorted.forEach(msg => {
+            sorted.forEach(([msgId, msg]) => {
                 const isOwn = (viewerRole === 'admin' && msg.from === 'admin') ||
                               (viewerRole === 'student' && msg.from === 'student');
                 const time = new Date(msg.timestamp).toLocaleString();
+                // Admin can delete any message; student can delete their own messages
+                const canDelete = threadId && (isAdmin || (isStudent && msg.from === 'student' && msg.fromName === currentUser?.fullName));
                 html += `<div class="d-flex ${isOwn ? 'justify-content-end' : 'justify-content-start'} mb-3">
                     <div class="message-bubble ${isOwn ? 'sent' : 'received'}">
                         <div class="message-sender">${escapeHtml(msg.fromName)}</div>
                         <div>${escapeHtml(msg.text)}</div>
-                        <div class="message-time ${isOwn ? 'text-end' : ''}">${time}</div>
+                        <div class="d-flex justify-content-between align-items-center gap-2 mt-1">
+                            <span class="message-time">${time}</span>
+                            ${canDelete ? `<button class="btn btn-link btn-sm p-0 text-danger" style="font-size:0.75rem;" onclick="deleteMessage('${threadId}','${msgId}')"><i class="fas fa-trash-alt"></i></button>` : ''}
+                        </div>
                     </div>
                 </div>`;
             });
@@ -3900,8 +3473,25 @@
             container.scrollTop = container.scrollHeight;
         }
 
+        window.deleteMessage = async function(threadId, msgId) {
+            if (!confirm('Delete this message?')) return;
+            try {
+                await db.ref(`messages/${threadId}/messages/${msgId}`).remove();
+                showToast('Message deleted', 'success');
+                // Refresh the appropriate conversation view
+                if (currentUser?.role === 'admin' || currentUser?.role === 'view_only_admin') {
+                    openAdminMessageThread(threadId);
+                } else {
+                    loadStudentMessages();
+                }
+            } catch (error) {
+                showToast('Error deleting message: ' + error.message, 'error');
+            }
+        }
+
         async function sendAdminReply() {
             if (!currentMessageThread || !currentUser) return;
+            if (currentUser.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const input = document.getElementById('adminReplyInput');
             const text = input?.value?.trim();
             if (!text) return;
@@ -3937,7 +3527,7 @@
                     if (convEl) convEl.innerHTML = '<p class="text-muted text-center py-4"><i class="fas fa-paper-plane me-2"></i>No messages yet. Send a message to admin!</p>';
                     return;
                 }
-                renderMessagesInContainer(thread.messages, 'student', 'studentMessageConversation');
+                renderMessagesInContainer(thread.messages, 'student', 'studentMessageConversation', threadId);
                 if (thread.unreadByStudent) {
                     await db.ref(`messages/${threadId}/unreadByStudent`).set(false);
                     updateStudentMsgBadge();
@@ -4006,6 +3596,34 @@
         });
 
         // ==================== INIT ====================
+        function applyRolePermissions() {
+            const isViewOnly = currentUser?.role === 'view_only_admin';
+            if (isViewOnly) {
+                adminDash.classList.add('role-view-only');
+                adminDash.classList.remove('role-admin');
+                const badge = document.getElementById('adminRoleBadge');
+                if (badge) { badge.textContent = 'View Only'; badge.className = 'role-badge view-only'; }
+            } else {
+                adminDash.classList.add('role-admin');
+                adminDash.classList.remove('role-view-only');
+                const badge = document.getElementById('adminRoleBadge');
+                if (badge) { badge.textContent = 'Admin'; badge.className = 'role-badge admin'; }
+            }
+        }
+
+        function showAdminDashboard() {
+            adminDash.style.display = 'block';
+            adminWelcome.textContent = `Welcome, ${currentUser.fullName}`;
+            applyRolePermissions();
+            loadCoursesForDropdowns();
+            displayCourseStructure();
+            initAttendanceDropdowns();
+            renderUsersList();
+            const currentSubject = document.getElementById('attendanceSubject')?.value;
+            updateStats(currentSubject || null);
+            loadAnnouncements();
+        }
+
         async function init() {
             await createDefaultAdminIfNeeded();
             await loadAllData();
@@ -4018,17 +3636,8 @@
                         currentUser = { uid: user.uid, ...userData };
                         await loadAllData();
                         loginSection.style.display = 'none';
-                        if (currentUser.role === 'admin') {
-                            adminDash.style.display = 'block';
-                            adminWelcome.textContent = `Welcome, ${currentUser.fullName}`;
-                            loadCoursesForDropdowns();
-                            displayCourseStructure();
-                            initAttendanceDropdowns();
-                            renderUsersList();
-                            const currentSubject = document.getElementById('attendanceSubject')?.value;
-                            updateStats(currentSubject || null);
-                            loadPendingRequestsCount();
-                            loadAnnouncements();
+                        if (currentUser.role === 'admin' || currentUser.role === 'view_only_admin') {
+                            showAdminDashboard();
                         } else {
                             studentDash.style.display = 'block';
                             studentWelcome.textContent = `Welcome, ${currentUser.fullName}`;
