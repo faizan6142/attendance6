@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AttenZen – Multi-Course Attendance System</title>
@@ -382,7 +380,7 @@
     <div class="toast-container"></div>
 
     <!-- LOGIN SECTION -->
-    <div id="loginSection" class="login-container">
+    <div id="loginSection" class="login-container" style="display: none;">
         <div class="text-center mb-4">
             <i class="fas fa-calendar-check fa-4x" style="color: var(--primary);"></i>
             <h2 class="mt-3">AttenZen</h2>
@@ -393,19 +391,19 @@
                 <label class="form-label">Email</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                    <input type="email" class="form-control" id="username" required placeholder="Enter email">
+                    <input type="email" class="form-control" id="username" required="" placeholder="Enter email">
                 </div>
             </div>
             <div class="mb-4">
                 <label class="form-label">Password</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                    <input type="password" class="form-control" id="password" required placeholder="Enter password">
+                    <input type="password" class="form-control" id="password" required="" placeholder="Enter password">
                 </div>
             </div>
             
             <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="rememberMe" checked>
+                <input type="checkbox" class="form-check-input" id="rememberMe" checked="">
                 <label class="form-check-label" for="rememberMe">Remember me (stay logged in)</label>
             </div>
             
@@ -419,13 +417,13 @@
     </div>
 
     <!-- ADMIN DASHBOARD -->
-    <div id="adminDashboard" class="dashboard-container">
+    <div id="adminDashboard" class="dashboard-container" style="display: block;">
         <nav class="navbar">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#"><i class="fas fa-calendar-check"></i> AttenZen</a>
                 <div class="d-flex align-items-center gap-3">
-                    <a class='btn btn-light btn-modern' href='/about'><i class="fas fa-circle-info me-2"></i>About</a>
-                    <span class="text-white" id="adminWelcome">Welcome, Admin</span>
+                    <a class="btn btn-light btn-modern" href="/about"><i class="fas fa-circle-info me-2"></i>About</a>
+                    <span class="text-white" id="adminWelcome">Welcome, Faizan Ameen Shah</span>
                     <button class="btn btn-light btn-modern" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
                 </div>
             </div>
@@ -437,7 +435,7 @@
                 <div class="col-md-3">
                     <div class="stats-card" id="totalStudentsCard">
                         <i class="fas fa-users fa-2x mb-3"></i>
-                        <div class="stats-number" id="totalStudents">0</div>
+                        <div class="stats-number" id="totalStudents">29</div>
                         <div class="stats-label">Total Students Enrolled</div>
                         <small class="text-white-50">Click to view details</small>
                     </div>
@@ -459,7 +457,7 @@
                 <div class="col-md-3">
                     <div class="stats-card" style="background:linear-gradient(135deg,#f8961e,#f3722c)">
                         <i class="fas fa-calendar-alt fa-2x mb-3"></i>
-                        <div class="stats-number" id="totalAttendanceDays">0</div>
+                        <div class="stats-number" id="totalAttendanceDays">17</div>
                         <div class="stats-label">Attendance Days</div>
                     </div>
                 </div>
@@ -478,17 +476,17 @@
             <!-- MANAGEMENT TABS -->
             <div class="user-management-section">
                 <h4><i class="fas fa-users me-2"></i>Management</h4>
-                <ul class="nav nav-tabs" id="userTabs">
-                    <li class="nav-item"><a class="nav-link active" href="#manageUsers" data-bs-toggle="tab">Manage Users</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#coursesTab" data-bs-toggle="tab">Courses & Subjects</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#attendanceTab" data-bs-toggle="tab">Attendance</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#reportsTab" data-bs-toggle="tab">Reports</a></li>
+                <ul class="nav nav-tabs" id="userTabs" role="tablist">
+                    <li class="nav-item" role="presentation"><a class="nav-link active" href="#manageUsers" data-bs-toggle="tab" aria-selected="true" role="tab">Manage Users</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="#coursesTab" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">Courses &amp; Subjects</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="#attendanceTab" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">Attendance</a></li>
+                    <li class="nav-item" role="presentation"><a class="nav-link" href="#reportsTab" data-bs-toggle="tab" aria-selected="false" tabindex="-1" role="tab">Reports</a></li>
                 </ul>
             </div>
 
             <div class="tab-content">
                 <!-- MANAGE USERS TAB -->
-                <div class="tab-pane fade show active" id="manageUsers">
+                <div class="tab-pane fade show active" id="manageUsers" role="tabpanel">
                     <div class="row">
                         <div class="col-md-5">
                             <div class="card">
@@ -497,35 +495,36 @@
                                     <form id="addUserForm">
                                         <div class="mb-3">
                                             <label class="form-label">Role</label>
-                                            <select class="form-control" id="newUserRole" required>
+                                            <select class="form-control" id="newUserRole" required="">
                                                 <option value="admin">Admin</option>
-                                                <option value="student" selected>Student</option>
+                                                <option value="view_only">View Only</option>
+                                                <option value="student" selected="">Student</option>
                                             </select>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Username (display name)</label>
-                                            <input type="text" class="form-control" id="newUsername" required>
+                                            <input type="text" class="form-control" id="newUsername" required="">
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Email (login)</label>
-                                            <input type="email" class="form-control" id="newEmail" required>
+                                            <input type="email" class="form-control" id="newEmail" required="">
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Password</label>
-                                            <input type="password" class="form-control" id="newPassword" required>
+                                            <input type="password" class="form-control" id="newPassword" required="">
                                         </div>
-                                       <div class="mb-3" id="rollNoSection">
+                                       <div class="mb-3" id="rollNoSection" style="display: block;">
                                             <label class="form-label">Roll Number (for students)</label>
                                             <input type="text" class="form-control" id="newRollNo">
                                         </div>
-                                        <div class="mb-3" id="regNoSection" style="display: none;">
+                                        <div class="mb-3" id="regNoSection" style="display: block;">
                                             <label class="form-label">Registration Number (for students)</label>
                                             <input type="text" class="form-control" id="newRegNo" placeholder="e.g., 64100-ang-2022">
                                             <small class="text-muted">Used for profile photo</small>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Full Name</label>
-                                            <input type="text" class="form-control" id="newFullName" required>
+                                            <input type="text" class="form-control" id="newFullName" required="">
                                         </div>
                                         <button type="submit" class="btn btn-success w-100"><i class="fas fa-plus me-2"></i>Add User</button>
                                     </form>
@@ -567,7 +566,370 @@
                                     <div class="user-list">
                                         <table class="table table-striped">
                                             <thead><tr><th>Email</th><th>Role</th><th>Name</th><th>Roll No</th><th>Actions</th></tr></thead>
-                                            <tbody id="usersList"></tbody>
+                                            <tbody id="usersList"><tr>
+                    <td>faizanameenshah66@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>FAIZAN AMEEN SHAH</td>
+                    <td>38</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('2hQdmyPnaxVkxhLc48CksuaYDgE2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('2hQdmyPnaxVkxhLc48CksuaYDgE2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>ifshanafayaz32@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Ifshana</td>
+                    <td>64</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('C6VRdJ8giEYjYDl1rB8Vfa7xKrB2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('C6VRdJ8giEYjYDl1rB8Vfa7xKrB2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>officialsameer505@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Sameer Gulzar</td>
+                    <td>1836</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('CROrvTdQzYg21c3jAiqhu2WXWN03')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('CROrvTdQzYg21c3jAiqhu2WXWN03')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>jmshidshafid@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Jamsheed </td>
+                    <td>55</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('Dgfwo3Q1DoZX9c24A8JPXQviKpm2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('Dgfwo3Q1DoZX9c24A8JPXQviKpm2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>muneebgulzar593@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Muneeb Gulzar Bhat </td>
+                    <td>1829</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('EgRhb3jZ63X6uQMM2pRPlkjVYHA3')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('EgRhb3jZ63X6uQMM2pRPlkjVYHA3')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>xamiddar453@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Suhaib manzoor</td>
+                    <td>29</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('F7QhMH6ggffeFGUigjAimdSqgD72')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('F7QhMH6ggffeFGUigjAimdSqgD72')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>umershafi166@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Umer Shafi</td>
+                    <td>34</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('FqvOsAyWdvYSIdevnFSOUXIXm6K2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('FqvOsAyWdvYSIdevnFSOUXIXm6K2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>Shafeejan751@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Shafee Bashir</td>
+                    <td>69</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('HSHZHqd6eIP75saTtC2v4ExdnQw1')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('HSHZHqd6eIP75saTtC2v4ExdnQw1')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>bismamushtaq158@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Bisma </td>
+                    <td>53</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('Ihb3pWdNgyXoet43qCMotWXjFSs1')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('Ihb3pWdNgyXoet43qCMotWXjFSs1')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>darurmilla021@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Urmilla Jan </td>
+                    <td>65</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('JXePuMzvx0PqPVpNZCcI902CDfN2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('JXePuMzvx0PqPVpNZCcI902CDfN2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>faizanameenshah.dt@gmail.com</td>
+                    <td><span class="badge bg-danger">admin</span></td>
+                    <td>Faizan Ameen Shah</td>
+                    <td>-</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('KuLD8VSxjcSfEugTQVDcU0QhYgj1')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('KuLD8VSxjcSfEugTQVDcU0QhYgj1')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>burhanfaizan4@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Faizan Muzaffar</td>
+                    <td>28</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('MhPPcXVN07QQ0PkSFWZPAVJR81a2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('MhPPcXVN07QQ0PkSFWZPAVJR81a2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>faizanameenshah@gmail.com</td>
+                    <td><span class="badge bg-danger">admin</span></td>
+                    <td>Mathematics Department</td>
+                    <td>-</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('Mo5RVCQjg1YhqlkTgrtts6VEohL2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('Mo5RVCQjg1YhqlkTgrtts6VEohL2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>tantrayishtiyaq40@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Ishtiyaq Ashraf Tantray</td>
+                    <td>14</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('NvgQGFKxj8ZRDIYKjTcS6LH7gL83')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('NvgQGFKxj8ZRDIYKjTcS6LH7gL83')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>uqaabdw000@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>ASIF AHMAD GANAI</td>
+                    <td>72</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('PsFXIhzeHIdhDMKsjbgrWVYJVn63')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('PsFXIhzeHIdhDMKsjbgrWVYJVn63')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>builtbymurtaza@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Murtaza Manzoor</td>
+                    <td>27</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('Q6TBgtmshLfXCoAS2OOfNkKfIVH2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('Q6TBgtmshLfXCoAS2OOfNkKfIVH2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>janfozia17@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Fozia Jan</td>
+                    <td>70</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('QUYpmNHJk4hhnD8cjkEgEKrfofE3')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('QUYpmNHJk4hhnD8cjkEgEKrfofE3')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>rahilreyaz99@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>RAHIL REYAZ BOHROO</td>
+                    <td>44</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('SeCCSDuyvkVgzIQMaeF7GD2VjCe2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('SeCCSDuyvkVgzIQMaeF7GD2VjCe2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>ghulumamustafa@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Peer Mohammad Ubaid</td>
+                    <td>1830</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('TddUSnvhDNQ7TOiBijKrdmwuLvd2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('TddUSnvhDNQ7TOiBijKrdmwuLvd2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>Shafeejan751@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Shafee Bashir</td>
+                    <td>69</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('VPGEqrZG2JQQMVF8heDWDb48Hyz2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('VPGEqrZG2JQQMVF8heDWDb48Hyz2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>janfozia17@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Fozia Jan</td>
+                    <td>70</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('WQ9QQJyo6BTcdXyHMFRYVgamrpU2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('WQ9QQJyo6BTcdXyHMFRYVgamrpU2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>faisalsabzarpadder@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Faisal Sabzar</td>
+                    <td>18</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('edHPj1UEvpQhJ7KiKFuAS1pUeyp1')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('edHPj1UEvpQhJ7KiKFuAS1pUeyp1')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>meerkhushboo371@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Khushboo Jan</td>
+                    <td>67</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('h94rbIMzyqUl62yomIu1RiA3SXz2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('h94rbIMzyqUl62yomIu1RiA3SXz2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>bhatfizuu@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Mehvish Yousuf</td>
+                    <td>68</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('hpEqLV1jJDavOQC6NmvtBwAm9h93')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('hpEqLV1jJDavOQC6NmvtBwAm9h93')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>farhanarehmanbhat@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Farhana Rehman </td>
+                    <td>1853</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('ib821pScNgN1CZtgza0Iem0Te3F3')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('ib821pScNgN1CZtgza0Iem0Te3F3')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>khanmuneema@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Muneema Bano </td>
+                    <td>66</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('mK9DFM7JBTQvppINLJrE3HJhhsr2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('mK9DFM7JBTQvppINLJrE3HJhhsr2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>NadharBashir@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Nisar Ahmad</td>
+                    <td>220708</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('rxn1GbSqR3W8s4hFTnv6MlJvfSG3')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('rxn1GbSqR3W8s4hFTnv6MlJvfSG3')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>mohdyaqoobkumar3699@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Areena jan</td>
+                    <td>63</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('sMfomnfPmhUXjmK8khOPQ603jGz2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('sMfomnfPmhUXjmK8khOPQ603jGz2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>shahzoershafkat513@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Shafkat Gulzar Sheikh </td>
+                    <td>24</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('shAdXdJymPQJsDuxq5Kqu4mI5YE2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('shAdXdJymPQJsDuxq5Kqu4mI5YE2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>arbinarasool@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Arbina Rasool</td>
+                    <td>61</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('tn0AmprTU8T0ZLuAmQvbxMcgAY32')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('tn0AmprTU8T0ZLuAmQvbxMcgAY32')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>lonesami268@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Leebu Yaqoob</td>
+                    <td>71</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('ttgNo3lJhDVhuh4uvBCxTLGXiCE2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('ttgNo3lJhDVhuh4uvBCxTLGXiCE2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>Sabdarnazir4@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Sabdar Nazir</td>
+                    <td>48</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('vHhJc2sYc3QAzQTXqpTwIdmtXGk1')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('vHhJc2sYc3QAzQTXqpTwIdmtXGk1')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr><tr>
+                    <td>shareenwani35@gmail.com</td>
+                    <td><span class="badge bg-primary">student</span></td>
+                    <td>Shareen Mushtaq </td>
+                    <td>62</td>
+                    <td>
+                        
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('zSottXyn5QVKEfGXEp9rB3x6EKh2')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('zSottXyn5QVKEfGXEp9rB3x6EKh2')"><i class="fas fa-trash"></i></button>
+                        
+                    </td>
+                </tr></tbody>
                                         </table>
                                     </div>
                                 </div>
@@ -577,7 +939,7 @@
                 </div>
 
                 <!-- COURSES & SUBJECTS TAB (unchanged) -->
-                <div class="tab-pane fade" id="coursesTab">
+                <div class="tab-pane fade" id="coursesTab" role="tabpanel">
                     <div class="row">
                         <div class="col-md-4">
                             <!-- Add Course -->
@@ -594,9 +956,7 @@
                             <div class="card mt-3">
                                 <div class="card-header"><i class="fas fa-layer-group me-2"></i>Add Semester</div>
                                 <div class="card-body">
-                                    <select id="semesterCourse" class="form-control mb-2">
-                                        <option value="">Select Course</option>
-                                    </select>
+                                    <select id="semesterCourse" class="form-control mb-2"><option value="">Select Course</option><option value="m">MATHEMATICS (M)</option></select>
                                     <input type="text" id="semesterName" class="form-control mb-2" placeholder="Semester Name (e.g., Semester 1)">
                                     <button class="btn btn-primary w-100" onclick="addSemester()">Add Semester</button>
                                 </div>
@@ -606,9 +966,7 @@
                             <div class="card mt-3">
                                 <div class="card-header"><i class="fas fa-book-open me-2"></i>Add Subject</div>
                                 <div class="card-body">
-                                    <select id="subjectCourse" class="form-control mb-2" onchange="loadSemestersForSubject()">
-                                        <option value="">Select Course</option>
-                                    </select>
+                                    <select id="subjectCourse" class="form-control mb-2" onchange="loadSemestersForSubject()"><option value="">Select Course</option><option value="m">MATHEMATICS (M)</option></select>
                                     <select id="subjectSemester" class="form-control mb-2">
                                         <option value="">Select Semester</option>
                                     </select>
@@ -624,9 +982,45 @@
                             <!-- Display Course Structure with Edit/Delete -->
                             <div class="card">
                                 <div class="card-header"><i class="fas fa-sitemap me-2"></i>Course Structure</div>
-                                <div class="card-body course-structure" id="courseStructure">
-                                    <p class="text-muted text-center">Loading courses...</p>
+                                <div class="card-body course-structure" id="courseStructure"><div class="course-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5><strong>MATHEMATICS</strong> (M)</h5>
+                        <div class="action-buttons" style="">
+                            <button class="btn btn-sm btn-outline-primary" onclick="editCourse('m')"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteCourse('m')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div><div class="semester-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6>📚 8th</h6>
+                                <div class="action-buttons" style="">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="editSemester('m', 'sem_1772366099267')"><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteSemester('m', 'sem_1772366099267')"><i class="fas fa-trash"></i></button>
                                 </div>
+                            </div><div class="subject-item">
+                                    <span>📖 COMPLEX ANALYSIS (MM822J1/N) - 4 credits</span>
+                                    <div class="action-buttons" style="">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="editSubject('m', 'sem_1772366099267', 'mm822j1')"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteSubject('m', 'sem_1772366099267', 'mm822j1')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </div><div class="subject-item">
+                                    <span>📖 MATHEMATICAL STATISTICS (MM822J3) - 6 credits</span>
+                                    <div class="action-buttons" style="">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="editSubject('m', 'sem_1772366099267', 'mm822j3')"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteSubject('m', 'sem_1772366099267', 'mm822j3')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </div><div class="subject-item">
+                                    <span>📖 Metric and Topological Spaces (MMT822J2) - 6 credits</span>
+                                    <div class="action-buttons" style="">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="editSubject('m', 'sem_1772366099267', 'mmt822j2')"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteSubject('m', 'sem_1772366099267', 'mmt822j2')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </div><div class="subject-item">
+                                    <span>📖 Research Methodolgy (MMT822RP) - 12 credits</span>
+                                    <div class="action-buttons" style="">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="editSubject('m', 'sem_1772366099267', 'mmt822rp')"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteSubject('m', 'sem_1772366099267', 'mmt822rp')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </div></div></div></div>
                             </div>
                             
                             <!-- Assign Students to Courses -->
@@ -635,14 +1029,10 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <select id="assignStudent" class="form-control mb-2">
-                                                <option value="">Select Student</option>
-                                            </select>
+                                            <select id="assignStudent" class="form-control mb-2"><option value="">Select Student</option><option value="14">14 - Ishtiyaq Ashraf Tantray</option><option value="18">18 - Faisal Sabzar</option><option value="24">24 - Shafkat Gulzar Sheikh </option><option value="27">27 - Murtaza Manzoor</option><option value="28">28 - Faizan Muzaffar</option><option value="29">29 - Suhaib manzoor</option><option value="34">34 - Umer Shafi</option><option value="38">38 - FAIZAN AMEEN SHAH</option><option value="44">44 - RAHIL REYAZ BOHROO</option><option value="48">48 - Sabdar Nazir</option><option value="53">53 - Bisma </option><option value="55">55 - Jamsheed </option><option value="61">61 - Arbina Rasool</option><option value="62">62 - Shareen Mushtaq </option><option value="63">63 - Areena jan</option><option value="64">64 - Ifshana</option><option value="65">65 - Urmilla Jan </option><option value="66">66 - Muneema Bano </option><option value="67">67 - Khushboo Jan</option><option value="68">68 - Mehvish Yousuf</option><option value="69">69 - Shafee Bashir</option><option value="70">70 - Fozia Jan</option><option value="71">71 - Leebu Yaqoob</option><option value="72">72 - ASIF AHMAD GANAI</option><option value="1829">1829 - Muneeb Gulzar Bhat </option><option value="1830">1830 - Peer Mohammad Ubaid</option><option value="1836">1836 - Sameer Gulzar</option><option value="1853">1853 - Farhana Rehman </option><option value="220708">220708 - Nisar Ahmad</option></select>
                                         </div>
                                         <div class="col-md-6">
-                                            <select id="assignCourse" class="form-control mb-2" onchange="loadSemestersForAssignment()">
-                                                <option value="">Select Course</option>
-                                            </select>
+                                            <select id="assignCourse" class="form-control mb-2" onchange="loadSemestersForAssignment()"><option value="">Select Course</option><option value="m">MATHEMATICS (M)</option></select>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -664,9 +1054,7 @@
                             <div class="card mt-3">
                                 <div class="card-header"><i class="fas fa-clipboard-list me-2"></i>Student Course Assignments</div>
                                 <div class="card-body">
-                                    <select id="viewAssignmentsCourse" class="form-control mb-2" onchange="viewAssignments()">
-                                        <option value="">All Courses</option>
-                                    </select>
+                                    <select id="viewAssignmentsCourse" class="form-control mb-2" onchange="viewAssignments()"><option value="">Select Course</option><option value="m">MATHEMATICS (M)</option></select>
                                     <select id="viewAssignmentsSemester" class="form-control mb-2" onchange="viewAssignments()">
                                         <option value="">All Semesters</option>
                                     </select>
@@ -678,7 +1066,7 @@
                 </div>
 
                 <!-- ATTENDANCE TAB (unchanged) -->
-                <div class="tab-pane fade" id="attendanceTab">
+                <div class="tab-pane fade" id="attendanceTab" role="tabpanel">
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="date-picker-container">
@@ -702,13 +1090,11 @@
 
                     <!-- Subject Selection for Attendance -->
                     <div class="card mb-3">
-                        <div class="card-header"><i class="fas fa-filter me-2"></i>Select Course & Subject</div>
+                        <div class="card-header"><i class="fas fa-filter me-2"></i>Select Course &amp; Subject</div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <select id="attendanceCourse" class="form-control">
-                                        <option value="">Select Course</option>
-                                    </select>
+                                    <select id="attendanceCourse" class="form-control"><option value="">Select Course</option><option value="m">MATHEMATICS (M)</option></select>
                                 </div>
                                 <div class="col-md-4">
                                     <select id="attendanceSemester" class="form-control">
@@ -767,16 +1153,14 @@
                 </div>
 
                 <!-- REPORTS TAB (unchanged) -->
-                <div class="tab-pane fade" id="reportsTab">
+                <div class="tab-pane fade" id="reportsTab" role="tabpanel">
                     <div class="card">
                         <div class="card-header"><i class="fas fa-chart-bar me-2"></i>Attendance Reports</div>
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-md-3">
                                     <label>Course</label>
-                                    <select id="reportCourse" class="form-control" onchange="loadSemestersForReport()">
-                                        <option value="">All Courses</option>
-                                    </select>
+                                    <select id="reportCourse" class="form-control" onchange="loadSemestersForReport()"><option value="">Select Course</option><option value="m">MATHEMATICS (M)</option></select>
                                 </div>
                                 <div class="col-md-3">
                                     <label>Semester</label>
@@ -815,7 +1199,7 @@
             <div class="container-fluid">
                 <a class="navbar-brand" href="#"><i class="fas fa-calendar-check"></i> AttenZen</a>
                 <div class="d-flex align-items-center gap-3">
-                    <a class='btn btn-light btn-modern' href='/about'><i class="fas fa-circle-info me-2"></i>About</a>
+                    <a class="btn btn-light btn-modern" href="/about"><i class="fas fa-circle-info me-2"></i>About</a>
                     <span class="text-white" id="studentWelcome">Welcome, Student</span>
                     <button class="btn btn-light btn-modern" id="studentLogoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
                 </div>
@@ -856,9 +1240,7 @@
                         <div class="card-header"><i class="fas fa-user-circle me-2"></i>My Profile</div>
                         <div class="card-body">
                             <div class="text-center mb-4">
-                                <img id="studentPhoto" src="" alt="Student Photo" 
-                                     style="width: 120px; height: 120px; border-radius: 5%; object-fit: cover; border: 3px solid var(--primary);"
-                                     onerror="this.onerror=null; this.src='https://via.placeholder.com/120?text=No+Image';">
+                                <img id="studentPhoto" src="https://via.placeholder.com/120?text=No+Image" alt="Student Photo" style="width: 120px; height: 120px; border-radius: 5%; object-fit: cover; border: 3px solid var(--primary);" onerror="this.onerror=null; this.src='https://via.placeholder.com/120?text=No+Image';">
                             </div>
                             <p><strong>Name:</strong> <span id="studentName">-</span></p>
                             <p><strong>Roll No:</strong> <span id="studentRollNo">-</span></p>
@@ -950,12 +1332,12 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Roll Number <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="editRollNo" required>
+                        <input type="text" class="form-control" id="editRollNo" required="">
                         <small class="text-muted">Changing roll number will update all attendance records</small>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Full Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="editFullName" required>
+                        <input type="text" class="form-control" id="editFullName" required="">
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Registration Number</label>
@@ -1121,6 +1503,74 @@
             toast.addEventListener('hidden.bs.toast', () => toast.remove());
         }
 
+        function isAdminRole() {
+            return currentUser?.role === 'admin';
+        }
+
+        function isViewOnlyRole() {
+            return currentUser?.role === 'view_only';
+        }
+
+        function canAccessAdminDashboard() {
+            return isAdminRole() || isViewOnlyRole();
+        }
+
+        function canManageData() {
+            return isAdminRole();
+        }
+
+        function requireManagePermission(action = 'perform this action') {
+            if (canManageData()) return true;
+            showToast(`Access denied: you can only view and download attendance. Cannot ${action}.`, 'warning');
+            return false;
+        }
+
+        function applyRolePermissions() {
+            const readOnly = isViewOnlyRole();
+            const manageUsersTabLink = document.querySelector('a[href="#manageUsers"]');
+            const coursesTabLink = document.querySelector('a[href="#coursesTab"]');
+            const manageUsersPane = document.getElementById('manageUsers');
+            const coursesPane = document.getElementById('coursesTab');
+            const attendanceTabLink = document.querySelector('a[href="#attendanceTab"]');
+
+            if (manageUsersTabLink?.parentElement) {
+                manageUsersTabLink.parentElement.style.display = readOnly ? 'none' : '';
+            }
+            if (coursesTabLink?.parentElement) {
+                coursesTabLink.parentElement.style.display = readOnly ? 'none' : '';
+            }
+            if (manageUsersPane) {
+                manageUsersPane.style.display = readOnly ? 'none' : '';
+            }
+            if (coursesPane) {
+                coursesPane.style.display = readOnly ? 'none' : '';
+            }
+
+            const restrictedButtons = [
+                'quickAddDateBtn',
+                'quickDeleteDateBtn',
+                'quickMarkHolidayBtn',
+                'quickBulkUpdateBtn',
+                'quickSendReminderBtn',
+                'markAllPresentBtn',
+                'addNewDateBtn2',
+                'deleteDateBtn2'
+            ];
+            restrictedButtons.forEach((id) => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = readOnly ? 'none' : '';
+            });
+
+            const addDatePanel = newDateInput2?.closest('.date-picker-container');
+            const deleteDatePanel = deleteDateSelect2?.closest('.date-picker-container');
+            if (addDatePanel) addDatePanel.style.display = readOnly ? 'none' : '';
+            if (deleteDatePanel) deleteDatePanel.style.display = readOnly ? 'none' : '';
+
+            if (readOnly && attendanceTabLink) {
+                bootstrap.Tab.getOrCreateInstance(attendanceTabLink).show();
+            }
+        }
+
         // Load all data from Firebase
         async function loadAllData() {
             try {
@@ -1144,6 +1594,7 @@
 
         // Save to Firebase
         async function saveAllData() {
+            if (!requireManagePermission('save changes')) return false;
             const updates = {};
             updates['/students'] = students;
             updates['/attendance'] = attendance;
@@ -1155,8 +1606,10 @@
                 showToast('Data saved to cloud!', 'success');
             } catch (error) {
                 showToast('Save failed: ' + error.message, 'error');
+                return false;
             }
             updateStats();
+            return true;
         }
 
         // Update stats cards – if subjectId provided, count only for that subject
@@ -1239,9 +1692,10 @@
                     <td>${student.regNo || '-'}</td>
                     <td>${subjectsList}</td>
                     <td>
+                        ${canManageData() ? `
                         <button class="btn btn-sm btn-primary" onclick="editStudent('${roll}')">
                             <i class="fas fa-edit"></i> Update
-                        </button>
+                        </button>` : '<span class="text-muted">View only</span>'}
                     </td>
                 </tr>`;
             });
@@ -1250,6 +1704,7 @@
 
         // ==================== STUDENT EDIT ====================
         window.editStudent = function(roll) {
+            if (!requireManagePermission('edit student details')) return;
             const student = students[roll];
             const uid = Object.keys(users).find(uid => users[uid].rollNo === roll);
             const userEntry = users[uid];
@@ -1267,6 +1722,7 @@
         }
 
         window.saveStudentChanges = async function() {
+            if (!requireManagePermission('save student updates')) return;
             const oldRoll = document.getElementById('editOldRoll').value;
             const newRoll = document.getElementById('editRollNo').value;
             const uid = document.getElementById('editStudentUid').value;
@@ -1395,6 +1851,67 @@
             }
         }
 
+        async function showAdminDashboardForCurrentUser() {
+            adminDash.style.display = 'block';
+            adminWelcome.textContent = `Welcome, ${currentUser.fullName}`;
+            loadCoursesForDropdowns();
+            displayCourseStructure();
+            initAttendanceDropdowns();
+            await renderUsersList();
+            const currentSubject = document.getElementById('attendanceSubject')?.value;
+            updateStats(currentSubject || null);
+            applyRolePermissions();
+        }
+
+        function showStudentDashboardForCurrentUser() {
+            studentDash.style.display = 'block';
+            studentWelcome.textContent = `Welcome, ${currentUser.fullName}`;
+            
+            const studentRec = students[currentUser.rollNo] || {};
+            studentName.textContent = currentUser.fullName;
+            studentRollNo.textContent = currentUser.rollNo || 'N/A';
+            studentRegNo.textContent = studentRec.regNo || 'N/A';
+            studentEmail.textContent = currentUser.email || 'N/A';
+            
+            if (studentRec.regNo) {
+                studentPhoto.src = `https://egov.uok.edu.in/CollegeAdm/AdmDetails/GetStudentImagePromotional.aspx?RegNo=${encodeURIComponent(studentRec.regNo)}`;
+            } else {
+                studentPhoto.src = 'https://via.placeholder.com/120?text=No+Image';
+            }
+            
+            const studentCourseData = studentCourses[currentUser.rollNo];
+            if (studentCourseData) {
+                const course = courses[studentCourseData.courseId];
+                const semester = course?.semesters[studentCourseData.semester];
+                studentCourse.textContent = course?.name || 'N/A';
+                studentSemester.textContent = semester?.name || 'N/A';
+                
+                const subjectSelect = document.getElementById('studentSubjectSelector');
+                subjectSelect.innerHTML = '';
+                studentCourseData.subjects.forEach((subId, index) => {
+                    const subject = semester?.subjects[subId];
+                    if (subject) {
+                        const option = document.createElement('option');
+                        option.value = subId;
+                        option.textContent = subject.name;
+                        subjectSelect.appendChild(option);
+                        if (index === 0) {
+                            option.selected = true;
+                        }
+                    }
+                });
+                if (subjectSelect.options.length === 0) {
+                    subjectSelect.innerHTML = '<option value="">No subjects</option>';
+                }
+            } else {
+                studentCourse.textContent = 'N/A';
+                studentSemester.textContent = 'N/A';
+                document.getElementById('studentSubjectSelector').innerHTML = '<option value="">No subjects</option>';
+            }
+            
+            renderStudentDashboard();
+        }
+
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('username').value;
@@ -1422,62 +1939,10 @@
                 await loadAllData();
                 loginSection.style.display = 'none';
                 
-                if (currentUser.role === 'admin') {
-                    adminDash.style.display = 'block';
-                    adminWelcome.textContent = `Welcome, ${currentUser.fullName}`;
-                    loadCoursesForDropdowns();
-                    displayCourseStructure();
-                    initAttendanceDropdowns();
-                    renderUsersList();
-                    const currentSubject = document.getElementById('attendanceSubject')?.value;
-                    updateStats(currentSubject || null);
+                if (canAccessAdminDashboard()) {
+                    await showAdminDashboardForCurrentUser();
                 } else {
-                    studentDash.style.display = 'block';
-                    studentWelcome.textContent = `Welcome, ${currentUser.fullName}`;
-                    
-                    const studentRec = students[currentUser.rollNo] || {};
-                    studentName.textContent = currentUser.fullName;
-                    studentRollNo.textContent = currentUser.rollNo || 'N/A';
-                    studentRegNo.textContent = studentRec.regNo || 'N/A';
-                    studentEmail.textContent = currentUser.email || 'N/A';
-                    
-                    if (studentRec.regNo) {
-                        studentPhoto.src = `https://egov.uok.edu.in/CollegeAdm/AdmDetails/GetStudentImagePromotional.aspx?RegNo=${encodeURIComponent(studentRec.regNo)}`;
-                    } else {
-                        studentPhoto.src = 'https://via.placeholder.com/120?text=No+Image';
-                    }
-                    
-                    const studentCourseData = studentCourses[currentUser.rollNo];
-                    if (studentCourseData) {
-                        const course = courses[studentCourseData.courseId];
-                        const semester = course?.semesters[studentCourseData.semester];
-                        studentCourse.textContent = course?.name || 'N/A';
-                        studentSemester.textContent = semester?.name || 'N/A';
-                        
-                        const subjectSelect = document.getElementById('studentSubjectSelector');
-                        subjectSelect.innerHTML = '';
-                        studentCourseData.subjects.forEach((subId, index) => {
-                            const subject = semester?.subjects[subId];
-                            if (subject) {
-                                const option = document.createElement('option');
-                                option.value = subId;
-                                option.textContent = subject.name;
-                                subjectSelect.appendChild(option);
-                                if (index === 0) {
-                                    option.selected = true;
-                                }
-                            }
-                        });
-                        if (subjectSelect.options.length === 0) {
-                            subjectSelect.innerHTML = '<option value="">No subjects</option>';
-                        }
-                    } else {
-                        studentCourse.textContent = 'N/A';
-                        studentSemester.textContent = 'N/A';
-                        document.getElementById('studentSubjectSelector').innerHTML = '<option value="">No subjects</option>';
-                    }
-                    
-                    renderStudentDashboard();
+                    showStudentDashboardForCurrentUser();
                 }
                 showToast('Login successful!', 'success');
             } catch (error) {
@@ -1499,6 +1964,7 @@
 
         // ==================== COURSE MANAGEMENT ====================
         window.addCourse = async function() {
+            if (!requireManagePermission('add courses')) return;
             const name = document.getElementById('courseName').value;
             const code = document.getElementById('courseCode').value;
             if (!name || !code) {
@@ -1521,6 +1987,7 @@
         }
 
         window.addSemester = async function() {
+            if (!requireManagePermission('add semesters')) return;
             const courseId = document.getElementById('semesterCourse').value;
             const name = document.getElementById('semesterName').value;
             if (!courseId || !name) {
@@ -1559,6 +2026,7 @@
         }
 
         window.addSubject = async function() {
+            if (!requireManagePermission('add subjects')) return;
             const courseId = document.getElementById('subjectCourse').value;
             const semesterId = document.getElementById('subjectSemester').value;
             const name = document.getElementById('subjectName').value;
@@ -1605,6 +2073,7 @@
         }
 
         window.editCourse = function(courseId) {
+            if (!requireManagePermission('edit courses')) return;
             const course = courses[courseId];
             const newName = prompt('Enter new course name:', course.name);
             const newCode = prompt('Enter new course code:', course.code);
@@ -1624,6 +2093,7 @@
         }
 
         window.deleteCourse = async function(courseId) {
+            if (!requireManagePermission('delete courses')) return;
             if (!confirm('Are you sure you want to delete this course? This will also delete all semesters and subjects in this course.')) return;
             
             const hasAssignments = Object.values(studentCourses).some(sc => sc.courseId === courseId);
@@ -1639,6 +2109,7 @@
         }
 
         window.editSemester = function(courseId, semesterId) {
+            if (!requireManagePermission('edit semesters')) return;
             const semester = courses[courseId]?.semesters[semesterId];
             const newName = prompt('Enter new semester name:', semester.name);
             
@@ -1656,6 +2127,7 @@
         }
 
         window.deleteSemester = async function(courseId, semesterId) {
+            if (!requireManagePermission('delete semesters')) return;
             if (!confirm('Are you sure you want to delete this semester? This will also delete all subjects in this semester.')) return;
             
             const hasAssignments = Object.values(studentCourses).some(sc => 
@@ -1673,6 +2145,7 @@
         }
 
         window.editSubject = function(courseId, semesterId, subjectId) {
+            if (!requireManagePermission('edit subjects')) return;
             const subject = courses[courseId]?.semesters[semesterId]?.subjects[subjectId];
             const newName = prompt('Enter new subject name:', subject.name);
             const newCode = prompt('Enter new subject code:', subject.code);
@@ -1694,6 +2167,7 @@
         }
 
         window.deleteSubject = async function(courseId, semesterId, subjectId) {
+            if (!requireManagePermission('delete subjects')) return;
             if (!confirm('Are you sure you want to delete this subject?')) return;
             
             const hasAssignments = Object.values(studentCourses).some(sc => 
@@ -1721,7 +2195,7 @@
                 html += `<div class="course-item">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5><strong>${course.name}</strong> (${course.code})</h5>
-                        <div class="action-buttons">
+                        <div class="action-buttons" style="${canManageData() ? '' : 'display:none;'}">
                             <button class="btn btn-sm btn-outline-primary" onclick="editCourse('${courseId}')"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-sm btn-outline-danger" onclick="deleteCourse('${courseId}')"><i class="fas fa-trash"></i></button>
                         </div>
@@ -1732,7 +2206,7 @@
                         html += `<div class="semester-item">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h6>📚 ${sem.name}</h6>
-                                <div class="action-buttons">
+                                <div class="action-buttons" style="${canManageData() ? '' : 'display:none;'}">
                                     <button class="btn btn-sm btn-outline-primary" onclick="editSemester('${courseId}', '${semId}')"><i class="fas fa-edit"></i></button>
                                     <button class="btn btn-sm btn-outline-danger" onclick="deleteSemester('${courseId}', '${semId}')"><i class="fas fa-trash"></i></button>
                                 </div>
@@ -1742,7 +2216,7 @@
                             Object.entries(sem.subjects).forEach(([subId, sub]) => {
                                 html += `<div class="subject-item">
                                     <span>📖 ${sub.name} (${sub.code}) - ${sub.credits} credits</span>
-                                    <div class="action-buttons">
+                                    <div class="action-buttons" style="${canManageData() ? '' : 'display:none;'}">
                                         <button class="btn btn-sm btn-outline-primary" onclick="editSubject('${courseId}', '${semId}', '${subId}')"><i class="fas fa-edit"></i></button>
                                         <button class="btn btn-sm btn-outline-danger" onclick="deleteSubject('${courseId}', '${semId}', '${subId}')"><i class="fas fa-trash"></i></button>
                                     </div>
@@ -1824,6 +2298,7 @@
         }
 
         window.assignStudentToCourse = async function() {
+            if (!requireManagePermission('assign students to courses')) return;
             const studentRoll = document.getElementById('assignStudent').value;
             const courseId = document.getElementById('assignCourse').value;
             const semesterId = document.getElementById('assignSemester').value;
@@ -2010,6 +2485,10 @@
             });
 
             document.querySelectorAll('.status-toggle').forEach(t => {
+                if (!canManageData()) {
+                    t.style.cursor = 'default';
+                    return;
+                }
                 t.addEventListener('click', async function() {
                     const student = this.dataset.student;
                     const date = this.dataset.date;
@@ -2045,6 +2524,7 @@
 
         if (markAllPresentBtn) {
             markAllPresentBtn.addEventListener('click', async () => {
+                if (!requireManagePermission('mark all present')) return;
                 const date = dateSelector.value;
                 const subjectId = document.getElementById('attendanceSubject').value;
                 
@@ -2086,6 +2566,7 @@
         }
 
         async function addDateHandler() {
+            if (!requireManagePermission('add attendance dates')) return;
             const date = newDateInput2?.value;
             if (!date) { showToast('Select a date', 'error'); return; }
             if (attendance[date]) { showToast('Date already exists', 'warning'); return; }
@@ -2099,6 +2580,7 @@
         if (quickAddDateBtn) quickAddDateBtn.addEventListener('click', addDateHandler);
 
         async function deleteDateHandler() {
+            if (!requireManagePermission('delete attendance dates')) return;
             const date = deleteDateSelect2?.value;
             if (!date) { showToast('Select a date', 'error'); return; }
             if (confirm(`Delete attendance for ${formatDate(date)}?`)) {
@@ -2123,6 +2605,7 @@
         // ==================== BULK UPDATE ====================
         if (quickBulkUpdateBtn) {
             quickBulkUpdateBtn.addEventListener('click', async () => {
+                if (!requireManagePermission('open bulk attendance update')) return;
                 const today = new Date().toISOString().split('T')[0];
                 document.getElementById('bulkUpdateDate').value = today;
                 
@@ -2258,6 +2741,7 @@
 
         if (applyBulkUpdate) {
             applyBulkUpdate.addEventListener('click', async () => {
+                if (!requireManagePermission('apply bulk attendance update')) return;
                 const date = bulkUpdateDate.value;
                 const subject = document.getElementById('bulkUpdateSubject').value;
                 const selected = [];
@@ -2606,6 +3090,7 @@
         // ==================== HOLIDAY / REMINDER ====================
         if (quickMarkHolidayBtn) {
             quickMarkHolidayBtn.addEventListener('click', async () => {
+                if (!requireManagePermission('mark holidays')) return;
                 const date = prompt('Enter date (YYYY-MM-DD):', new Date().toISOString().split('T')[0]);
                 const subject = document.getElementById('attendanceSubject')?.value;
                 
@@ -2633,6 +3118,7 @@
 
         if (quickSendReminderBtn) {
             quickSendReminderBtn.addEventListener('click', () => {
+                if (!requireManagePermission('send reminders')) return;
                 showToast('Reminder sent (demo)', 'success');
             });
         }
@@ -2642,13 +3128,8 @@
             cloudSyncBtn.addEventListener('click', async () => {
                 await loadAllData();
                 if (currentUser) {
-                    if (currentUser.role === 'admin') { 
-                        loadCoursesForDropdowns();
-                        displayCourseStructure();
-                        initAttendanceDropdowns();
-                        renderUsersList();
-                        const currentSubject = document.getElementById('attendanceSubject')?.value;
-                        updateStats(currentSubject || null);
+                    if (canAccessAdminDashboard()) { 
+                        await showAdminDashboardForCurrentUser();
                     }
                     else renderStudentDashboard();
                 }
@@ -2676,6 +3157,7 @@
 
         document.getElementById('addUserForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (!requireManagePermission('add users')) return;
             const role = document.getElementById('newUserRole').value;
             const email = document.getElementById('newEmail').value;
             const password = document.getElementById('newPassword').value;
@@ -2719,20 +3201,24 @@
             tbody.innerHTML = '';
             
             Object.entries(users).forEach(([uid, u]) => {
+                const roleBadgeClass = u.role === 'admin' ? 'bg-danger' : u.role === 'view_only' ? 'bg-secondary' : 'bg-primary';
                 tbody.innerHTML += `<tr>
                     <td>${u.email}</td>
-                    <td><span class="badge ${u.role==='admin'?'bg-danger':'bg-primary'}">${u.role}</span></td>
+                    <td><span class="badge ${roleBadgeClass}">${u.role}</span></td>
                     <td>${u.fullName}</td>
                     <td>${u.rollNo || '-'}</td>
                     <td>
+                        ${canManageData() ? `
                         <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('${uid}')"><i class="fas fa-key"></i></button>
                         <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('${uid}')"><i class="fas fa-trash"></i></button>
+                        ` : '<span class="text-muted">View only</span>'}
                     </td>
                 </tr>`;
             });
         }
 
         window.resetPassword = async (uid) => {
+            if (!requireManagePermission('reset passwords')) return;
             const email = users[uid]?.email;
             if (!email) return;
             try {
@@ -2745,6 +3231,7 @@
 
         // ==================== UPDATED DELETE USER ====================
         window.deleteUser = async (uid) => {
+            if (!requireManagePermission('delete users')) return;
             if (uid === currentUser?.uid) { 
                 showToast('Cannot delete yourself', 'error'); 
                 return; 
@@ -2812,6 +3299,7 @@
 
         // ==================== NEW CLEANUP FUNCTION ====================
         async function cleanupOrphanedStudents() {
+            if (!requireManagePermission('clean up orphaned student data')) return;
             try {
                 console.log("Starting cleanup of orphaned students...");
                 let cleanedCount = 0;
@@ -2889,6 +3377,7 @@
         document.getElementById('showPasswords')?.addEventListener('change', renderUsersList);
 
         document.getElementById('addRollNumbersBtn')?.addEventListener('click', async () => {
+            if (!requireManagePermission('bulk add students')) return;
             const text = document.getElementById('bulkRollInput').value.trim();
             if (!text) { showToast('Enter roll numbers', 'error'); return; }
             const rolls = text.split(',').map(r => r.trim()).filter(r => r);
@@ -2953,62 +3442,10 @@
                         currentUser = { uid: user.uid, ...userData };
                         await loadAllData();
                         loginSection.style.display = 'none';
-                        if (currentUser.role === 'admin') {
-                            adminDash.style.display = 'block';
-                            adminWelcome.textContent = `Welcome, ${currentUser.fullName}`;
-                            loadCoursesForDropdowns();
-                            displayCourseStructure();
-                            initAttendanceDropdowns();
-                            renderUsersList();
-                            const currentSubject = document.getElementById('attendanceSubject')?.value;
-                            updateStats(currentSubject || null);
+                        if (canAccessAdminDashboard()) {
+                            await showAdminDashboardForCurrentUser();
                         } else {
-                            studentDash.style.display = 'block';
-                            studentWelcome.textContent = `Welcome, ${currentUser.fullName}`;
-                            
-                            const studentRec = students[currentUser.rollNo] || {};
-                            studentName.textContent = currentUser.fullName;
-                            studentRollNo.textContent = currentUser.rollNo || 'N/A';
-                            studentRegNo.textContent = studentRec.regNo || 'N/A';
-                            studentEmail.textContent = currentUser.email || 'N/A';
-                            
-                            if (studentRec.regNo) {
-                                studentPhoto.src = `https://egov.uok.edu.in/CollegeAdm/AdmDetails/GetStudentImagePromotional.aspx?RegNo=${encodeURIComponent(studentRec.regNo)}`;
-                            } else {
-                                studentPhoto.src = 'https://via.placeholder.com/120?text=No+Image';
-                            }
-                            
-                            const studentCourseData = studentCourses[currentUser.rollNo];
-                            if (studentCourseData) {
-                                const course = courses[studentCourseData.courseId];
-                                const semester = course?.semesters[studentCourseData.semester];
-                                studentCourse.textContent = course?.name || 'N/A';
-                                studentSemester.textContent = semester?.name || 'N/A';
-                                
-                                const subjectSelect = document.getElementById('studentSubjectSelector');
-                                subjectSelect.innerHTML = '';
-                                studentCourseData.subjects.forEach((subId, index) => {
-                                    const subject = semester?.subjects[subId];
-                                    if (subject) {
-                                        const option = document.createElement('option');
-                                        option.value = subId;
-                                        option.textContent = subject.name;
-                                        subjectSelect.appendChild(option);
-                                        if (index === 0) {
-                                            option.selected = true;
-                                        }
-                                    }
-                                });
-                                if (subjectSelect.options.length === 0) {
-                                    subjectSelect.innerHTML = '<option value="">No subjects</option>';
-                                }
-                            } else {
-                                studentCourse.textContent = 'N/A';
-                                studentSemester.textContent = 'N/A';
-                                document.getElementById('studentSubjectSelector').innerHTML = '<option value="">No subjects</option>';
-                            }
-                            
-                            renderStudentDashboard();
+                            showStudentDashboardForCurrentUser();
                         }
                         showToast('Auto-login successful!', 'success');
                     }
@@ -3026,5 +3463,6 @@
         
         init();
     </script>
-</body>
-</html>
+
+
+</body></html>
