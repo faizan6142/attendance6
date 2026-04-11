@@ -6,7 +6,6 @@
     <title>AttenZen – Multi-Course Attendance System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -16,604 +15,366 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <style>
+        /* Your existing styles */
         :root {
-            --primary: #5b5ef4;
-            --secondary: #4042d4;
-            --accent: #00e5ff;
-            --success: #00d4aa;
-            --danger: #ff3d71;
-            --warning: #ffaa00;
-            --light: #f0f2ff;
-            --dark: #0d0f1c;
-            --surface: #ffffff;
-            --surface2: #f5f6ff;
-            --border: #e4e6ff;
-            --text-muted: #8890b5;
-            --shadow-sm: 0 2px 8px rgba(91,94,244,0.08);
-            --shadow-md: 0 8px 32px rgba(91,94,244,0.15);
-            --shadow-lg: 0 20px 60px rgba(91,94,244,0.2);
-            --radius: 16px;
-            --radius-sm: 10px;
-            --radius-xs: 6px;
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --light: #f8f9fa;
+            --dark: #212529;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Sora', sans-serif;
-            background: #0a0b1a;
-            background-image: 
-                radial-gradient(ellipse at 20% 10%, rgba(91,94,244,0.25) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(0,229,255,0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(64,66,212,0.1) 0%, transparent 70%);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
         .glass {
-            background: rgba(255,255,255,0.97);
-            backdrop-filter: blur(20px);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-lg);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(31,38,135,0.37);
         }
-
-        /* ========== LOGIN ========== */
         .login-container {
-            max-width: 440px;
-            margin: 60px auto;
-            padding: 0;
-            border-radius: 24px;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(91,94,244,0.3);
-            animation: slideUp 0.6s cubic-bezier(0.16,1,0.3,1);
+            max-width: 450px;
+            margin: 50px auto;
+            padding: 40px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .dashboard-container { display: none; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .navbar {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 15px;
+            margin-bottom: 25px;
+            padding: 15px 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .navbar-brand { font-weight: 700; font-size: 1.5rem; color: white !important; display: flex; align-items: center; gap: 10px; }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             overflow: hidden;
         }
-        .login-header {
-            background: linear-gradient(135deg, #1a1c3a 0%, #12142b 100%);
-            padding: 44px 44px 36px;
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .card-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .stats-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
             text-align: center;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
         }
-        .login-header::before {
-            content: '';
-            position: absolute;
-            top: -60px; left: -60px;
-            width: 200px; height: 200px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(91,94,244,0.4) 0%, transparent 70%);
-        }
-        .login-header::after {
-            content: '';
-            position: absolute;
-            bottom: -40px; right: -40px;
-            width: 150px; height: 150px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(0,229,255,0.2) 0%, transparent 70%);
-        }
-        .login-logo-wrap {
-            position: relative; z-index: 1;
-            width: 72px; height: 72px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 20px;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 20px;
-            box-shadow: 0 8px 32px rgba(91,94,244,0.5);
-        }
-        .login-logo-wrap i { font-size: 2rem; color: white; }
-        .login-header h2 {
-            font-size: 2rem; font-weight: 800; color: white;
-            position: relative; z-index: 1; margin-bottom: 6px;
-            letter-spacing: -0.5px;
-        }
-        .login-header p { color: rgba(255,255,255,0.55); font-size: 0.9rem; position: relative; z-index: 1; }
-        .login-body {
-            background: #ffffff;
-            padding: 36px 44px 40px;
-        }
-        .login-body .form-label {
-            font-size: 0.78rem; font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 6px;
-        }
-        .login-body .input-group-text {
-            background: var(--light); border: 1.5px solid var(--border);
-            border-right: none; color: var(--primary);
-            border-radius: var(--radius-xs) 0 0 var(--radius-xs);
-        }
-        .login-body .form-control {
-            border: 1.5px solid var(--border); border-left: none;
-            background: var(--light); font-size: 0.95rem;
-            border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
-            transition: all 0.2s;
-        }
-        .login-body .form-control:focus {
-            border-color: var(--primary); box-shadow: 0 0 0 3px rgba(91,94,244,0.12);
-            background: white;
-        }
-        .login-body .input-group:focus-within .input-group-text {
-            border-color: var(--primary); background: white;
-        }
-        .login-btn {
-            background: linear-gradient(135deg, var(--primary) 0%, #7b7efc 100%);
-            border: none; color: white; width: 100%;
-            padding: 14px; border-radius: var(--radius-sm);
-            font-size: 0.95rem; font-weight: 700; letter-spacing: 0.3px;
-            transition: all 0.3s; position: relative; overflow: hidden;
-            box-shadow: 0 6px 24px rgba(91,94,244,0.4);
-        }
-        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(91,94,244,0.5); }
-        .login-btn:active { transform: translateY(0); }
-        .login-footer-text { color: var(--text-muted); font-size: 0.82rem; text-align: center; margin-top: 20px; }
-
-        @keyframes slideUp {
-            from { transform: translateY(60px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* ========== DASHBOARD ========== */
-        .dashboard-container { display: none; animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* ========== NAVBAR ========== */
-        .navbar {
-            background: linear-gradient(135deg, #1a1c3a 0%, #0e1028 100%);
-            border-radius: var(--radius);
-            margin-bottom: 28px;
-            padding: 14px 24px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
-            border: 1px solid rgba(91,94,244,0.2);
-        }
-        .navbar-brand {
-            font-weight: 800; font-size: 1.4rem; color: white !important;
-            display: flex; align-items: center; gap: 12px; letter-spacing: -0.3px;
-        }
-        .navbar-brand .brand-icon {
-            width: 38px; height: 38px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 10px; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(91,94,244,0.4);
-        }
-        .navbar-brand .brand-icon i { font-size: 1rem; color: white; }
-        .navbar .welcome-text {
-            color: rgba(255,255,255,0.7); font-size: 0.88rem; font-weight: 500;
-        }
-        .btn-nav {
-            background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.15);
-            padding: 8px 18px; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 600;
-            transition: all 0.2s; backdrop-filter: blur(10px);
-        }
-        .btn-nav:hover { background: rgba(255,255,255,0.18); color: white; border-color: rgba(255,255,255,0.3); }
-
-        /* ========== CARDS ========== */
-        .card {
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-sm);
-            margin-bottom: 20px;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            overflow: hidden;
-            background: var(--surface);
-        }
-        .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-        .card-header {
-            background: linear-gradient(135deg, #1a1c3a 0%, #252850 100%);
-            color: white; border: none;
-            padding: 16px 22px; font-weight: 600;
-            font-size: 0.95rem; display: flex; align-items: center; gap: 8px;
-        }
-        .card-header i { opacity: 0.85; }
-        .card-body { padding: 22px; }
-
-        /* ========== STATS CARDS ========== */
-        .stats-card {
-            color: white; padding: 28px 24px;
-            border-radius: var(--radius); text-align: left;
-            position: relative; overflow: hidden; cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: none;
-        }
-        .stats-card:hover { transform: translateY(-6px); }
-        .stats-card::after {
-            content: '';
-            position: absolute;
-            bottom: -30px; right: -30px;
-            width: 120px; height: 120px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.08);
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
         }
         .stats-card::before {
             content: '';
             position: absolute;
-            top: -50%; right: -50%;
-            width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%);
-            animation: rotate 25s linear infinite;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
         }
-        .stats-icon {
-            width: 52px; height: 52px;
-            background: rgba(255,255,255,0.18);
-            border-radius: 14px; display: flex; align-items: center; justify-content: center;
-            margin-bottom: 16px; position: relative; z-index: 1;
-        }
-        .stats-icon i { font-size: 1.4rem; }
-        .stats-number { font-size: 2.8rem; font-weight: 800; margin: 0 0 4px; position: relative; z-index: 1; letter-spacing: -1px; line-height: 1; }
-        .stats-label { font-size: 0.88rem; opacity: 0.85; position: relative; z-index: 1; font-weight: 500; }
-        .stats-sub { font-size: 0.75rem; opacity: 0.65; position: relative; z-index: 1; margin-top: 4px; }
-
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* ========== ATTENDANCE TABLE ========== */
-        .attendance-table { width: 100%; border-collapse: separate; border-spacing: 0 4px; }
+        .stats-number { font-size: 2.5rem; font-weight: 700; margin: 10px 0; position: relative; z-index: 1; }
+        .stats-label { font-size: 1rem; opacity: 0.9; position: relative; z-index: 1; }
+        .attendance-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 5px;
+        }
         .attendance-table th {
-            background: #1a1c3a; color: rgba(255,255,255,0.9);
-            padding: 12px 14px; font-weight: 600; font-size: 0.82rem;
-            text-transform: uppercase; letter-spacing: 0.5px;
-            border: none; position: sticky; top: 0; z-index: 10;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12px;
+            font-weight: 600;
+            border: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        .attendance-table th:first-child { border-radius: 8px 0 0 8px; }
-        .attendance-table th:last-child { border-radius: 0 8px 8px 0; }
-        .attendance-table td {
-            padding: 11px 14px; background: white; border: none;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05); font-size: 0.9rem;
-            border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-        }
-        .attendance-table td:first-child { border-left: 1px solid var(--border); border-radius: 8px 0 0 8px; }
-        .attendance-table td:last-child { border-right: 1px solid var(--border); border-radius: 0 8px 8px 0; }
-        .attendance-table tr:hover td { background: var(--light); }
-
-        /* ========== STATUS TOGGLES ========== */
+        .attendance-table td { padding: 12px; background: white; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .status-toggle {
-            cursor: pointer; padding: 6px 14px; border-radius: 8px;
-            font-weight: 700; font-size: 0.78rem; letter-spacing: 0.5px;
-            transition: all 0.2s ease; display: inline-block;
-            min-width: 52px; text-align: center; text-transform: uppercase;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            min-width: 60px;
+            text-align: center;
         }
-        .status-toggle.present {
-            background: rgba(0,212,170,0.12); color: #00a37d;
-            border: 1.5px solid rgba(0,212,170,0.35);
-        }
-        .status-toggle.absent {
-            background: rgba(255,61,113,0.1); color: #e02060;
-            border: 1.5px solid rgba(255,61,113,0.3);
-        }
-        .status-toggle.holiday {
-            background: rgba(255,170,0,0.1); color: #cc8800;
-            border: 1.5px solid rgba(255,170,0,0.3);
-        }
-        .status-toggle:hover { transform: scale(1.08); filter: brightness(1.05); }
-
-        /* ========== BUTTONS ========== */
+        .status-toggle.present { background: linear-gradient(135deg, #4cc9f0, #4895ef); color: white; box-shadow: 0 4px 10px rgba(76,201,240,0.3); }
+        .status-toggle.absent { background: linear-gradient(135deg, #f72585, #b5179e); color: white; box-shadow: 0 4px 10px rgba(247,37,133,0.3); }
+        .status-toggle.holiday { background: linear-gradient(135deg, #f8961e, #f3722c); color: white; box-shadow: 0 4px 10px rgba(248,150,30,0.3); }
+        .status-toggle:hover { transform: scale(1.05); filter: brightness(1.1); }
         .btn-modern {
-            padding: 9px 18px; border-radius: var(--radius-sm);
-            font-weight: 600; font-size: 0.88rem; transition: all 0.25s ease;
-            border: none; position: relative; overflow: hidden;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
         }
         .btn-modern::before {
-            content: ''; position: absolute; top: 50%; left: 50%;
-            width: 0; height: 0; border-radius: 50%;
-            background: rgba(255,255,255,0.25);
-            transform: translate(-50%,-50%); transition: width 0.5s, height 0.5s;
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%,-50%);
+            transition: width 0.6s, height 0.6s;
         }
         .btn-modern:hover::before { width: 300px; height: 300px; }
-        .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, #7b7efc 100%); color: white; box-shadow: 0 4px 16px rgba(91,94,244,0.35); }
-        .btn-primary:hover { color: white; box-shadow: 0 6px 20px rgba(91,94,244,0.5); transform: translateY(-1px); }
-        .btn-success { background: linear-gradient(135deg, #00d4aa 0%, #00b4d8 100%); color: white; box-shadow: 0 4px 16px rgba(0,212,170,0.3); }
-        .btn-success:hover { color: white; transform: translateY(-1px); }
-        .btn-danger { background: linear-gradient(135deg, #ff3d71 0%, #c2185b 100%); color: white; box-shadow: 0 4px 16px rgba(255,61,113,0.3); }
-        .btn-danger:hover { color: white; transform: translateY(-1px); }
-        .btn-warning { background: linear-gradient(135deg, #ffaa00 0%, #ff7c00 100%); color: white; box-shadow: 0 4px 16px rgba(255,170,0,0.3); }
-        .btn-warning:hover { color: white; transform: translateY(-1px); }
-
-        /* ========== DATE PICKER CONTAINERS ========== */
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
+        .btn-success { background: linear-gradient(135deg, #4cc9f0, #4895ef); }
+        .btn-danger { background: linear-gradient(135deg, #f72585, #b5179e); }
+        .btn-warning { background: linear-gradient(135deg, #f8961e, #f3722c); }
         .date-picker-container {
-            background: linear-gradient(135deg, #1a1c3a 0%, #252850 100%);
-            padding: 22px; border-radius: var(--radius);
-            color: white; margin-bottom: 20px;
-            border: 1px solid rgba(91,94,244,0.2);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 20px;
         }
-        .date-picker-container h5 { font-size: 0.95rem; font-weight: 700; margin-bottom: 14px !important; }
-        /* ========== CLOUD SYNC ========== */
         .cloud-sync {
-            position: fixed; bottom: 30px; right: 30px;
-            background: linear-gradient(135deg, var(--primary), #7b7efc);
-            color: white; width: 56px; height: 56px;
-            border-radius: 16px; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 8px 24px rgba(91,94,244,0.5); cursor: pointer;
-            z-index: 1000; transition: all 0.3s ease;
-            animation: pulse 3s infinite;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
         }
-        .cloud-sync:hover { transform: scale(1.1) rotate(180deg); box-shadow: 0 12px 30px rgba(91,94,244,0.7); }
+        .cloud-sync:hover { transform: scale(1.1) rotate(180deg); }
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(91,94,244,0.6); }
-            70% { box-shadow: 0 0 0 14px rgba(91,94,244,0); }
-            100% { box-shadow: 0 0 0 0 rgba(91,94,244,0); }
+            0% { box-shadow: 0 0 0 0 rgba(67,97,238,0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(67,97,238,0); }
+            100% { box-shadow: 0 0 0 0 rgba(67,97,238,0); }
         }
-
-        /* ========== TOASTS ========== */
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 1055; }
         .toast {
-            background: #1a1c3a; color: white;
-            border-radius: var(--radius-sm);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-            border: none; border-left: 4px solid var(--primary);
-            margin-bottom: 10px; min-width: 280px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-left: 5px solid var(--primary);
+            margin-bottom: 10px;
         }
-        .toast .toast-body { color: rgba(255,255,255,0.9); font-weight: 500; font-size: 0.88rem; }
-        .toast .btn-close { filter: invert(1) opacity(0.7); }
-        .toast-success { border-left-color: var(--success); }
-        .toast-error { border-left-color: var(--danger); }
-        .toast-warning { border-left-color: var(--warning); }
-
-        /* ========== LEGEND ========== */
+        .toast-success { border-left-color: #4cc9f0; }
+        .toast-error { border-left-color: #f72585; }
+        .toast-warning { border-left-color: #f8961e; }
         .attendance-legend {
-            display: flex; gap: 24px; justify-content: center;
-            margin: 16px 0;
-            background: var(--surface); padding: 12px 24px;
-            border-radius: var(--radius-sm); border: 1px solid var(--border);
-            width: fit-content; margin: 16px auto;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
         }
-        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: #444; }
-        .legend-color { width: 18px; height: 18px; border-radius: 5px; }
-        .legend-color.present { background: rgba(0,212,170,0.8); border: 1.5px solid rgba(0,212,170,0.5); }
-        .legend-color.absent { background: rgba(255,61,113,0.7); border: 1.5px solid rgba(255,61,113,0.4); }
-        .legend-color.holiday { background: rgba(255,170,0,0.7); border: 1.5px solid rgba(255,170,0,0.4); }
-
-        /* ========== MODALS ========== */
-        .bulk-update-modal, .student-list-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
-            display: none; justify-content: center; align-items: center; z-index: 2000;
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .legend-color { width: 20px; height: 20px; border-radius: 5px; }
+        .legend-color.present { background: linear-gradient(135deg, #4cc9f0, #4895ef); }
+        .legend-color.absent { background: linear-gradient(135deg, #f72585, #b5179e); }
+        .legend-color.holiday { background: linear-gradient(135deg, #f8961e, #f3722c); }
+        .bulk-update-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
         }
-        .bulk-update-content, .student-list-content {
-            background: white; padding: 32px; border-radius: 20px;
-            max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
+        .bulk-update-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
         }
-        .student-list-content { max-width: 1200px; width: 95%; }
-        .bulk-update-content h4, .student-list-content h4 {
-            font-weight: 800; font-size: 1.2rem; color: #1a1c3a; margin-bottom: 8px;
-        }
-
-        /* ========== USER LIST ========== */
         .user-list { max-height: 400px; overflow-y: auto; }
-
-        /* ========== QUICK ACTIONS ========== */
         .quick-action-buttons {
-            display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
         }
         .quick-action-btn {
-            flex: 1; min-width: 120px; padding: 18px 12px;
-            border-radius: var(--radius); background: var(--surface);
-            border: 1.5px solid var(--border);
-            box-shadow: var(--shadow-sm); transition: all 0.25s ease;
-            display: flex; flex-direction: column; align-items: center; gap: 8px;
-            color: #444; cursor: pointer;
+            flex: 1;
+            min-width: 120px;
+            padding: 15px;
+            border-radius: 10px;
+            background: white;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
         }
-        .quick-action-btn i { font-size: 1.5rem; color: var(--primary); transition: color 0.25s; }
-        .quick-action-btn span { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
         .quick-action-btn:hover {
-            transform: translateY(-5px); border-color: var(--primary);
-            box-shadow: 0 8px 24px rgba(91,94,244,0.2);
-            background: linear-gradient(135deg, var(--primary), #7b7efc); color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
         }
-        .quick-action-btn:hover i { color: white; }
-
-        /* ========== SPINNER ========== */
-        .loading-spinner { display: none; text-align: center; padding: 48px; }
+        .loading-spinner { display: none; text-align: center; padding: 40px; }
         .spinner {
-            width: 44px; height: 44px;
-            border: 4px solid var(--border);
-            border-top: 4px solid var(--primary);
-            border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* ========== BADGES ========== */
-        .badge-custom { padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.82rem; letter-spacing: 0.3px; }
-        .badge-present { background: rgba(0,212,170,0.12); color: #008a6e; border: 1px solid rgba(0,212,170,0.3); }
-        .badge-absent { background: rgba(255,61,113,0.1); color: #c01555; border: 1px solid rgba(255,61,113,0.3); }
-
-        /* ========== TABS ========== */
-        .nav-tabs { border-bottom: none; gap: 4px; padding: 0 4px; }
-        .nav-tabs .nav-link {
-            color: rgba(255,255,255,0.65); border: none;
-            padding: 10px 20px; border-radius: var(--radius-sm);
-            font-weight: 600; font-size: 0.88rem; transition: all 0.2s;
-        }
-        .nav-tabs .nav-link:hover { color: white; background: rgba(255,255,255,0.1); }
-        .nav-tabs .nav-link.active { background: rgba(255,255,255,0.18); color: white; border: none; }
-
-        /* ========== MANAGEMENT SECTION ========== */
+        .badge-custom { padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 0.9rem; }
+        .badge-present { background: linear-gradient(135deg, #4cc9f0, #4895ef); color: white; }
+        .badge-absent { background: linear-gradient(135deg, #f72585, #b5179e); color: white; }
+        .nav-tabs .nav-link { color: white; border: none; }
+        .nav-tabs .nav-link.active { background-color: rgba(255,255,255,0.2); color: white; border: none; }
         .user-management-section {
-            background: linear-gradient(135deg, #1a1c3a 0%, #252850 100%);
-            color: white; padding: 18px 22px;
-            border-radius: var(--radius) var(--radius) 0 0;
-            margin-bottom: 0; border: 1px solid rgba(91,94,244,0.2);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
-        .user-management-section h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 12px; }
-
-        /* ========== COURSE STRUCTURE ========== */
         .course-structure { max-height: 500px; overflow-y: auto; }
         .subject-checkbox-group { max-height: 200px; overflow-y: auto; }
-        .action-buttons { display: flex; gap: 5px; justify-content: flex-end; }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            justify-content: flex-end;
+        }
         .course-item {
-            border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-            padding: 16px; margin-bottom: 14px; background: var(--light);
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
         }
         .semester-item {
-            margin-left: 20px; margin-top: 10px; padding: 12px;
-            background: white; border-radius: 8px;
+            margin-left: 20px;
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
             border-left: 3px solid var(--primary);
         }
         .subject-item {
-            margin-left: 30px; padding: 6px 10px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px dashed var(--border); font-size: 0.88rem;
+            margin-left: 30px;
+            padding: 5px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed #dee2e6;
         }
         .edit-mode input {
-            width: 100%; padding: 6px; border: 1.5px solid var(--border); border-radius: 4px;
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
         }
-
-        /* ========== FORM CONTROLS ========== */
-        .form-control, .form-select {
-            border: 1.5px solid var(--border); border-radius: var(--radius-xs);
-            font-size: 0.9rem; color: #222; transition: all 0.2s;
-            background: var(--light);
+        .student-list-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
         }
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary); background: white;
-            box-shadow: 0 0 0 3px rgba(91,94,244,0.1);
+        .student-list-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 1200px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
         }
-        .form-label { font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
-
-        /* ========== TABLE (global) ========== */
-        .table { font-size: 0.88rem; }
-        .table th { font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); border-color: var(--border); }
-        .table td { border-color: var(--border); vertical-align: middle; }
-        .table-striped > tbody > tr:nth-of-type(odd) > * { background-color: var(--light); }
-
-        /* ========== CHART CONTAINER ========== */
-        .chart-container {
-            background: var(--surface); border-radius: var(--radius);
-            padding: 24px; border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm); margin-top: 20px;
+        .student-table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .chart-container h5 { font-weight: 700; font-size: 0.95rem; color: #1a1c3a; }
-
-        /* ========== DATE SELECTOR ========== */
-        .date-selector { border: 1.5px solid rgba(255,255,255,0.25) !important; background: rgba(255,255,255,0.1) !important; color: white !important; border-radius: var(--radius-xs) !important; }
-
-        /* ========== STUDENT DASHBOARD ========== */
-        .attendance-summary {
-            background: linear-gradient(135deg, #1a1c3a, #252850);
-            color: white; padding: 20px; border-radius: var(--radius);
-            margin-bottom: 12px; text-align: center;
-        }
-        .attendance-summary .stats-number { font-size: 2.2rem; }
-
-        /* ========== PROGRESS ========== */
-        .progress { border-radius: 50px; background: var(--border); overflow: hidden; }
-        .progress-bar { font-size: 0.78rem; font-weight: 700; }
-
-        /* ========== PROFILE CARD ========== */
-        .profile-photo-wrap {
-            width: 100px; height: 100px; border-radius: 24px;
-            border: 3px solid var(--primary); overflow: hidden;
-            margin: 0 auto 16px;
-            box-shadow: 0 8px 24px rgba(91,94,244,0.3);
-        }
-        .profile-photo-wrap img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* ========== STUDENT TABLE ========== */
-        .student-table { width: 100%; border-collapse: collapse; }
         .student-table th {
-            background: #1a1c3a; color: rgba(255,255,255,0.85);
-            padding: 12px 14px; position: sticky; top: 0;
-            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            position: sticky;
+            top: 0;
         }
-        .student-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
-        .student-table tr:hover td { background: var(--light); }
+        .student-table td {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .student-table tr:hover {
+            background: #f8f9fa;
+        }
         .edit-student-form {
-            background: var(--light); padding: 24px; border-radius: var(--radius);
-            margin-top: 20px; border: 1.5px solid var(--border);
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
         }
         .subject-code-badge {
-            display: inline-block; background: var(--light);
-            padding: 3px 9px; border-radius: 12px; margin: 2px;
-            font-size: 0.8rem; font-family: 'DM Mono', monospace;
-            border: 1px solid var(--border); color: var(--primary); font-weight: 600;
-        }
-
-        /* ========== ANNOUNCEMENTS ========== */
-        .announcement-card {
-            padding: 16px; margin-bottom: 14px;
-            background: var(--light); border-radius: var(--radius-sm);
-            border: 1px solid var(--border);
-            border-left: 4px solid var(--primary);
-            transition: box-shadow 0.2s;
-        }
-        .announcement-card:hover { box-shadow: var(--shadow-sm); }
-        .announcement-card .announcement-meta { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; }
-        .announcement-card .announcement-title { font-weight: 700; font-size: 1rem; color: #1a1c3a; margin-bottom: 6px; }
-        .announcement-card .announcement-body { font-size: 0.9rem; color: #444; white-space: pre-wrap; line-height: 1.6; }
-
-        /* ========== ROLE BADGE ========== */
-        .role-badge {
-            font-size: 0.72rem; font-weight: 700; padding: 3px 10px;
-            border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase;
-        }
-        .role-badge.admin { background: rgba(255,61,113,0.2); color: #ff3d71; border: 1px solid rgba(255,61,113,0.4); }
-        .role-badge.view-only { background: rgba(0,229,255,0.15); color: var(--accent); border: 1px solid rgba(0,229,255,0.35); }
-        /* Hide write-only controls for view-only admin */
-        .role-view-only .admin-write-only { display: none !important; }
-
-        /* ========== ANNOUNCEMENT POPUP ========== */
-        .announcement-popup-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.72); backdrop-filter: blur(8px);
-            display: none; justify-content: center; align-items: center; z-index: 4000;
-        }
-        .announcement-popup-content {
-            background: white; border-radius: 24px; padding: 36px 32px 28px;
-            max-width: 480px; width: 92%; position: relative;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.45);
-            border-top: 5px solid var(--primary);
-            animation: slideUp 0.4s cubic-bezier(0.16,1,0.3,1);
-        }
-        .announcement-popup-icon {
-            width: 68px; height: 68px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 20px; display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 18px; box-shadow: 0 8px 28px rgba(91,94,244,0.4);
-        }
-        .announcement-popup-title { font-size: 1.3rem; font-weight: 800; color: #1a1c3a; text-align: center; margin-bottom: 12px; }
-        .announcement-popup-body { color: #555; line-height: 1.7; white-space: pre-wrap; max-height: 180px; overflow-y: auto; margin-bottom: 14px; font-size: 0.95rem; }
-        .announcement-popup-meta { font-size: 0.78rem; color: var(--text-muted); text-align: center; margin-bottom: 18px; }
-
-        /* ========== MESSAGING ========== */
-        .message-modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.65); backdrop-filter: blur(6px);
-            display: none; justify-content: center; align-items: center; z-index: 3500;
-        }
-        .message-modal-content {
-            background: white; border-radius: 20px;
-            width: 92%; max-width: 600px; max-height: 90vh;
-            display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.35);
-        }
-        .message-modal-header {
-            background: linear-gradient(135deg, #1a1c3a 0%, #252850 100%);
-            color: white; padding: 18px 22px;
-            display: flex; justify-content: space-between; align-items: center;
-            flex-shrink: 0;
-        }
-        .message-modal-header h5 { margin: 0; font-weight: 700; font-size: 1rem; }
-        .messages-scroll-area { flex: 1; overflow-y: auto; padding: 16px; min-height: 200px; max-height: 380px; background: #f8f9ff; }
-        .message-input-area { padding: 14px 16px; border-top: 1px solid var(--border); background: white; flex-shrink: 0; }
-        .message-bubble {
-            max-width: 74%; padding: 10px 15px; border-radius: 16px;
-            margin-bottom: 10px; font-size: 0.9rem; line-height: 1.5; word-break: break-word;
-        }
-        .message-bubble.sent {
-            background: linear-gradient(135deg, var(--primary), #7b7efc);
-            color: white; margin-left: auto; border-bottom-right-radius: 4px;
-        }
-        .message-bubble.received {
-            background: white; color: #333; border-bottom-left-radius: 4px;
-            border: 1px solid var(--border); box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        }
-        .message-sender { font-size: 0.7rem; font-weight: 700; margin-bottom: 3px; opacity: 0.75; }
-        .message-time { font-size: 0.68rem; opacity: 0.6; margin-top: 4px; }
-        .message-thread-item {
-            padding: 13px 15px; border-radius: var(--radius-sm);
-            border: 1.5px solid var(--border); margin-bottom: 9px;
-            cursor: pointer; transition: all 0.2s; background: white;
-        }
-        .message-thread-item:hover { border-color: var(--primary); background: var(--light); }
-        .message-thread-item.unread { border-left: 4px solid var(--primary); background: rgba(91,94,244,0.04); }
-        .msg-nav-badge {
-            position: absolute; top: -5px; right: -5px;
-            background: var(--danger); color: white; border-radius: 50%;
-            width: 18px; height: 18px; font-size: 0.65rem; font-weight: 700;
-            display: flex; align-items: center; justify-content: center;
+            display: inline-block;
+            background: #e9ecef;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin: 2px;
+            font-size: 0.85rem;
+            font-family: monospace;
         }
     </style>
 </head>
@@ -622,20 +383,17 @@
 
     <!-- LOGIN SECTION -->
     <div id="loginSection" class="login-container">
-        <div class="login-header">
-            <div class="login-logo-wrap">
-                <i class="fas fa-calendar-check"></i>
-            </div>
-            <h2>AttenZen</h2>
-            <p>Multi-Course Attendance Management</p>
+        <div class="text-center mb-4">
+            <i class="fas fa-calendar-check fa-4x" style="color: var(--primary);"></i>
+            <h2 class="mt-3">AttenZen</h2>
+            <p class="text-muted">Multi-Course Attendance Management</p>
         </div>
-        <div class="login-body">
         <form id="loginForm">
             <div class="mb-4">
-                <label class="form-label">Email Address</label>
+                <label class="form-label">Email</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                    <input type="email" class="form-control" id="username" required placeholder="Enter your email">
+                    <input type="email" class="form-control" id="username" required placeholder="Enter email">
                 </div>
             </div>
             <div class="mb-4">
@@ -646,16 +404,17 @@
                 </div>
             </div>
             
-            <div class="mb-4 form-check">
+            <div class="mb-3 form-check">
                 <input type="checkbox" class="form-check-input" id="rememberMe" checked>
-                <label class="form-check-label" style="font-size:0.88rem;color:#666;" for="rememberMe">Remember me (stay logged in)</label>
+                <label class="form-check-label" for="rememberMe">Remember me (stay logged in)</label>
             </div>
             
-            <button type="submit" class="login-btn">
-                <i class="fas fa-sign-in-alt me-2"></i>Sign In
+            <button type="submit" class="btn btn-primary btn-modern w-100 py-3">
+                <i class="fas fa-sign-in-alt me-2"></i>Login
             </button>
         </form>
-        <p class="login-footer-text">contact <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8debece4f7ece3ece0e8e8e3fee5ece5a3e9f9cdeae0ece4e1a3eee2e0">[email&#160;protected]</a></p>
+        <div class="text-center mt-4">
+            <small class="text-muted">contact faizanameenshah.dt@gmail.com</small>
         </div>
     </div>
 
@@ -663,14 +422,11 @@
     <div id="adminDashboard" class="dashboard-container">
         <nav class="navbar">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">
-                    <div class="brand-icon"><i class="fas fa-calendar-check"></i></div>
-                    AttenZen
-                </a>
+                <a class="navbar-brand" href="#"><i class="fas fa-calendar-check"></i> AttenZen</a>
                 <div class="d-flex align-items-center gap-3">
-                    <span class="welcome-text" id="adminWelcome">Welcome, Admin</span>
-                    <span id="adminRoleBadge" class="role-badge admin" style="display:none">Admin</span>
-                    <button class="btn btn-nav btn-modern" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
+                    <a class='btn btn-light btn-modern' href='/about'><i class="fas fa-circle-info me-2"></i>About</a>
+                    <span class="text-white" id="adminWelcome">Welcome, Admin</span>
+                    <button class="btn btn-light btn-modern" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
                 </div>
             </div>
         </nav>
@@ -679,47 +435,44 @@
             <!-- QUICK STATS -->
             <div class="row g-4 mb-4">
                 <div class="col-md-3">
-                    <div class="stats-card" id="totalStudentsCard" style="background: linear-gradient(135deg, #5b5ef4 0%, #4042d4 100%);">
-                        <div class="stats-icon"><i class="fas fa-users"></i></div>
+                    <div class="stats-card" id="totalStudentsCard">
+                        <i class="fas fa-users fa-2x mb-3"></i>
                         <div class="stats-number" id="totalStudents">0</div>
                         <div class="stats-label">Total Students Enrolled</div>
-                        <div class="stats-sub">Click to view details</div>
+                        <small class="text-white-50">Click to view details</small>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="stats-card" style="background: linear-gradient(135deg, #00d4aa 0%, #00b4d8 100%);">
-                        <div class="stats-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stats-card" style="background:linear-gradient(135deg,#4cc9f0,#4895ef)">
+                        <i class="fas fa-check-circle fa-2x mb-3"></i>
                         <div class="stats-number" id="presentToday">0</div>
                         <div class="stats-label">Present Today</div>
-                        <div class="stats-sub">&nbsp;</div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="stats-card" style="background: linear-gradient(135deg, #ff3d71 0%, #c2185b 100%);">
-                        <div class="stats-icon"><i class="fas fa-times-circle"></i></div>
+                    <div class="stats-card" style="background:linear-gradient(135deg,#f72585,#b5179e)">
+                        <i class="fas fa-times-circle fa-2x mb-3"></i>
                         <div class="stats-number" id="absentToday">0</div>
                         <div class="stats-label">Absent Today</div>
-                        <div class="stats-sub">&nbsp;</div>
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="stats-card" style="background: linear-gradient(135deg, #ffaa00 0%, #ff7c00 100%);">
-                        <div class="stats-icon"><i class="fas fa-calendar-alt"></i></div>
+                    <div class="stats-card" style="background:linear-gradient(135deg,#f8961e,#f3722c)">
+                        <i class="fas fa-calendar-alt fa-2x mb-3"></i>
                         <div class="stats-number" id="totalAttendanceDays">0</div>
                         <div class="stats-label">Attendance Days</div>
-                        <div class="stats-sub">&nbsp;</div>
                     </div>
                 </div>
             </div>
 
             <!-- QUICK ACTIONS -->
             <div class="quick-action-buttons mb-4">
-                <button class="quick-action-btn admin-write-only" id="quickAddDateBtn"><i class="fas fa-calendar-plus fa-2x"></i><span>Add Date</span></button>
-                <button class="quick-action-btn admin-write-only" id="quickDeleteDateBtn"><i class="fas fa-calendar-minus fa-2x"></i><span>Delete Date</span></button>
-                <button class="quick-action-btn admin-write-only" id="quickMarkHolidayBtn"><i class="fas fa-umbrella-beach fa-2x"></i><span>Mark Holiday</span></button>
-                <button class="quick-action-btn admin-write-only" id="quickBulkUpdateBtn"><i class="fas fa-tasks fa-2x"></i><span>Bulk Update</span></button>
+                <button class="quick-action-btn" id="quickAddDateBtn"><i class="fas fa-calendar-plus fa-2x"></i><span>Add Date</span></button>
+                <button class="quick-action-btn" id="quickDeleteDateBtn"><i class="fas fa-calendar-minus fa-2x"></i><span>Delete Date</span></button>
+                <button class="quick-action-btn" id="quickMarkHolidayBtn"><i class="fas fa-umbrella-beach fa-2x"></i><span>Mark Holiday</span></button>
+                <button class="quick-action-btn" id="quickBulkUpdateBtn"><i class="fas fa-tasks fa-2x"></i><span>Bulk Update</span></button>
                 <button class="quick-action-btn" id="quickExportPDFBtn"><i class="fas fa-file-pdf fa-2x"></i><span>Export PDF</span></button>
-                <button class="quick-action-btn admin-write-only" id="quickSendReminderBtn"><i class="fas fa-bell fa-2x"></i><span>Send Reminder</span></button>
+                <button class="quick-action-btn" id="quickSendReminderBtn"><i class="fas fa-bell fa-2x"></i><span>Send Reminder</span></button>
             </div>
 
             <!-- MANAGEMENT TABS -->
@@ -730,8 +483,6 @@
                     <li class="nav-item"><a class="nav-link" href="#coursesTab" data-bs-toggle="tab">Courses & Subjects</a></li>
                     <li class="nav-item"><a class="nav-link" href="#attendanceTab" data-bs-toggle="tab">Attendance</a></li>
                     <li class="nav-item"><a class="nav-link" href="#reportsTab" data-bs-toggle="tab">Reports</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#announcementsTab" data-bs-toggle="tab" id="announcementsTabLink"><i class="fas fa-bullhorn me-1"></i>Announcements</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#messagesTab" data-bs-toggle="tab" id="messagesTabLink"><i class="fas fa-envelope me-1"></i>Messages <span id="adminMessagesCount" class="badge bg-danger ms-1" style="display:none">0</span></a></li>
                 </ul>
             </div>
 
@@ -739,7 +490,7 @@
                 <!-- MANAGE USERS TAB -->
                 <div class="tab-pane fade show active" id="manageUsers">
                     <div class="row">
-                        <div class="col-md-5 admin-write-only">
+                        <div class="col-md-5">
                             <div class="card">
                                 <div class="card-header"><i class="fas fa-user-plus me-2"></i>Add New User</div>
                                 <div class="card-body">
@@ -748,7 +499,6 @@
                                             <label class="form-label">Role</label>
                                             <select class="form-control" id="newUserRole" required>
                                                 <option value="admin">Admin</option>
-                                                <option value="view_only_admin">View-Only Admin</option>
                                                 <option value="student" selected>Student</option>
                                             </select>
                                         </div>
@@ -788,9 +538,19 @@
                                     <div class="mb-3">
                                         <label for="bulkRollInput" class="form-label">Roll Numbers (comma separated)</label>
                                         <textarea class="form-control bulk-roll-input" id="bulkRollInput" rows="3" placeholder="e.g., 38,14,44,18,17"></textarea>
-                                        <small class="text-muted">Accounts created with email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c8baa7a4a488a9bcbcada6b2ada6e6aba7a5">[email&#160;protected]</a>, password: roll123</small>
+                                        <small class="text-muted">Accounts created with email: roll@attenzen.com, password: roll123</small>
                                     </div>
                                     <button class="btn btn-outline-primary w-100" type="button" id="addRollNumbersBtn"><i class="fas fa-user-plus me-2"></i>Add Students</button>
+                                </div>
+                            </div>
+                            <!-- NEW: Database Cleanup Card -->
+                            <div class="card mt-3">
+                                <div class="card-header bg-warning"><i class="fas fa-broom me-2"></i>Database Cleanup</div>
+                                <div class="card-body">
+                                    <p class="text-muted">Remove orphaned student records from courses and attendance (e.g., "Unknown" entries).</p>
+                                    <button class="btn btn-warning w-100" type="button" onclick="cleanupOrphanedStudents()">
+                                        <i class="fas fa-broom me-2"></i>Clean Up Database
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -816,10 +576,10 @@
                     </div>
                 </div>
 
-                <!-- COURSES & SUBJECTS TAB -->
+                <!-- COURSES & SUBJECTS TAB (unchanged) -->
                 <div class="tab-pane fade" id="coursesTab">
                     <div class="row">
-                        <div class="col-md-4 admin-write-only">
+                        <div class="col-md-4">
                             <!-- Add Course -->
                             <div class="card">
                                 <div class="card-header"><i class="fas fa-book me-2"></i>Add Course</div>
@@ -870,7 +630,7 @@
                             </div>
                             
                             <!-- Assign Students to Courses -->
-                            <div class="card mt-3 admin-write-only">
+                            <div class="card mt-3">
                                 <div class="card-header"><i class="fas fa-user-graduate me-2"></i>Assign Students to Courses</div>
                                 <div class="card-body">
                                     <div class="row">
@@ -917,9 +677,9 @@
                     </div>
                 </div>
 
-                <!-- ATTENDANCE TAB -->
+                <!-- ATTENDANCE TAB (unchanged) -->
                 <div class="tab-pane fade" id="attendanceTab">
-                    <div class="row mb-4 admin-write-only">
+                    <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="date-picker-container">
                                 <h5 class="mb-3"><i class="fas fa-plus-circle me-2"></i>Add New Date</h5>
@@ -930,7 +690,7 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="date-picker-container" style="background:linear-gradient(135deg,#2d0a1e,#4a1030)">
+                            <div class="date-picker-container" style="background:linear-gradient(135deg,#f72585,#b5179e)">
                                 <h5 class="mb-3"><i class="fas fa-minus-circle me-2"></i>Delete Date</h5>
                                 <div class="d-flex gap-3">
                                     <select id="deleteDateSelect2" class="form-control"><option value="">Select date</option></select>
@@ -981,9 +741,9 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span><i class="fas fa-table me-2"></i>Attendance Management</span>
                             <div class="d-flex gap-2">
-                                <input type="date" id="dateSelector" class="form-control date-selector admin-write-only">
-                                <button class="btn btn-light btn-modern admin-write-only" id="markTodayBtn"><i class="fas fa-calendar-check me-2"></i>Today</button>
-                                <button class="btn btn-light btn-modern admin-write-only" id="markAllPresentBtn"><i class="fas fa-check-double me-2"></i>All Present</button>
+                                <input type="date" id="dateSelector" class="form-control date-selector">
+                                <button class="btn btn-light btn-modern" id="markTodayBtn"><i class="fas fa-calendar-check me-2"></i>Today</button>
+                                <button class="btn btn-light btn-modern" id="markAllPresentBtn"><i class="fas fa-check-double me-2"></i>All Present</button>
                                 <button class="btn btn-light btn-modern" id="downloadExcelBtn"><i class="fas fa-file-excel me-2"></i>Export</button>
                                 <button class="btn btn-light btn-modern" id="refreshTableBtn"><i class="fas fa-sync-alt me-2"></i>Refresh</button>
                             </div>
@@ -1006,7 +766,7 @@
                     </div>
                 </div>
 
-                <!-- REPORTS TAB -->
+                <!-- REPORTS TAB (unchanged) -->
                 <div class="tab-pane fade" id="reportsTab">
                     <div class="card">
                         <div class="card-header"><i class="fas fa-chart-bar me-2"></i>Attendance Reports</div>
@@ -1046,89 +806,18 @@
                     </div>
                 </div>
             </div>
-
-                <!-- ANNOUNCEMENTS TAB -->
-                <div class="tab-pane fade" id="announcementsTab">
-                    <div class="row">
-                        <div class="col-md-5 admin-write-only">
-                            <div class="card">
-                                <div class="card-header"><i class="fas fa-bullhorn me-2"></i>Send Announcement</div>
-                                <div class="card-body">
-                                    <div class="mb-3">
-                                        <label class="form-label">Title</label>
-                                        <input type="text" class="form-control" id="announcementTitle" placeholder="Announcement title...">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Message</label>
-                                        <textarea class="form-control" id="announcementMessage" rows="6" placeholder="Write your message here... Students will see this in their dashboard."></textarea>
-                                    </div>
-                                    <button class="btn btn-primary w-100 btn-modern" onclick="sendAnnouncement()"><i class="fas fa-paper-plane me-2"></i>Send to All Students</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-7">
-                            <div class="card">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <span><i class="fas fa-history me-2"></i>Sent Announcements</span>
-                                    <button class="btn btn-sm btn-outline-light" onclick="loadAnnouncements()"><i class="fas fa-sync-alt"></i></button>
-                                </div>
-                                <div class="card-body" id="adminAnnouncementsList" style="max-height:500px;overflow-y:auto;">
-                                    <p class="text-muted text-center">No announcements yet.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MESSAGES TAB -->
-                <div class="tab-pane fade" id="messagesTab">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <span><i class="fas fa-inbox me-2"></i>Student Messages</span>
-                                    <button class="btn btn-sm btn-outline-light" onclick="loadMessageThreads()"><i class="fas fa-sync-alt"></i></button>
-                                </div>
-                                <div class="card-body p-2" id="messageThreadsList" style="max-height:520px;overflow-y:auto;">
-                                    <p class="text-muted text-center py-4">No messages yet.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card">
-                                <div class="card-header d-flex justify-content-between align-items-center" id="messageConversationHeader">
-                                    <span><i class="fas fa-comments me-2"></i>Conversation</span>
-                                </div>
-                                <div class="messages-scroll-area" id="adminMessageConversation">
-                                    <p class="text-muted text-center py-4">Select a thread from the left to view the conversation.</p>
-                                </div>
-                                <div id="adminReplyArea" style="display:none;" class="message-input-area admin-write-only">
-                                    <div class="d-flex gap-2">
-                                        <input type="text" class="form-control" id="adminReplyInput" placeholder="Type your reply...">
-                                        <button class="btn btn-primary btn-modern" id="adminSendReplyBtn"><i class="fas fa-paper-plane"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
+
+    <!-- STUDENT DASHBOARD (unchanged) -->
     <div id="studentDashboard" class="dashboard-container">
         <nav class="navbar">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">
-                    <div class="brand-icon"><i class="fas fa-calendar-check"></i></div>
-                    AttenZen
-                </a>
+                <a class="navbar-brand" href="#"><i class="fas fa-calendar-check"></i> AttenZen</a>
                 <div class="d-flex align-items-center gap-3">
-                    <span class="welcome-text" id="studentWelcome">Welcome, Student</span>
-                    <div class="position-relative">
-                        <button class="btn btn-nav btn-modern" id="openStudentMsgBtn"><i class="fas fa-envelope me-2"></i>Messages</button>
-                        <span id="studentMsgBadge" class="msg-nav-badge" style="display:none;">!</span>
-                    </div>
-                    <button class="btn btn-nav btn-modern" id="studentLogoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
+                    <a class='btn btn-light btn-modern' href='/about'><i class="fas fa-circle-info me-2"></i>About</a>
+                    <span class="text-white" id="studentWelcome">Welcome, Student</span>
+                    <button class="btn btn-light btn-modern" id="studentLogoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
                 </div>
             </div>
         </nav>
@@ -1158,8 +847,8 @@
                         <div class="card-header"><i class="fas fa-chart-pie me-2"></i>Attendance Summary</div>
                         <div class="card-body">
                             <div class="attendance-summary text-center"><div class="stats-number" id="presentCount">0</div><div class="stats-label">Present</div></div>
-                            <div class="attendance-summary text-center" style="background:linear-gradient(135deg,#ff3d71,#c2185b)"><div class="stats-number" id="absentCount">0</div><div class="stats-label">Absent</div></div>
-                            <div class="progress mb-3" style="height:22px"><div id="attendancePercentage" class="progress-bar bg-success" style="width:0%">0%</div></div>
+                            <div class="attendance-summary text-center" style="background:linear-gradient(135deg,#f72585,#b5179e)"><div class="stats-number" id="absentCount">0</div><div class="stats-label">Absent</div></div>
+                            <div class="progress mb-3" style="height:25px"><div id="attendancePercentage" class="progress-bar bg-success" style="width:0%">0%</div></div>
                             <p id="attendanceMessage" class="text-muted text-center"></p>
                         </div>
                     </div>
@@ -1167,79 +856,26 @@
                         <div class="card-header"><i class="fas fa-user-circle me-2"></i>My Profile</div>
                         <div class="card-body">
                             <div class="text-center mb-4">
-                                <div class="profile-photo-wrap">
                                 <img id="studentPhoto" src="" alt="Student Photo" 
-                                     style="width:100%;height:100%;object-fit:cover;"
+                                     style="width: 120px; height: 120px; border-radius: 5%; object-fit: cover; border: 3px solid var(--primary);"
                                      onerror="this.onerror=null; this.src='https://via.placeholder.com/120?text=No+Image';">
-                                </div>
                             </div>
                             <p><strong>Name:</strong> <span id="studentName">-</span></p>
                             <p><strong>Roll No:</strong> <span id="studentRollNo">-</span></p>
                             <p><strong>Registration No:</strong> <span id="studentRegNo">-</span></p>
                             <p><strong>Email:</strong> <span id="studentEmail">-</span></p>
-                            <p><strong>Course:</strong> <span id="studentCourse">-</span></p>
+                            <p><strong>Subject/Course:</strong> <span id="studentCourse">-</span></p>
                             <p><strong>Semester:</strong> <span id="studentSemester">-</span></p>
                             <button class="btn btn-primary btn-modern w-100 mt-3" id="changePasswordBtn"><i class="fas fa-key me-2"></i>Change Password</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- STUDENT ANNOUNCEMENTS -->
-            <div class="row mt-3">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span><i class="fas fa-bullhorn me-2"></i>Announcements</span>
-                            <button class="btn btn-sm btn-outline-light" onclick="loadAnnouncements()"><i class="fas fa-sync-alt"></i></button>
-                        </div>
-                        <div class="card-body" id="studentAnnouncementsList" style="max-height:400px;overflow-y:auto;">
-                            <p class="text-muted text-center">Loading announcements...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="cloud-sync" id="cloudSyncBtn" title="Refresh from cloud"><i class="fas fa-sync-alt fa-lg"></i></div>
-
-    <!-- ANNOUNCEMENT POPUP MODAL -->
-    <div id="announcementPopup" class="announcement-popup-overlay">
-        <div class="announcement-popup-content">
-            <div class="announcement-popup-icon">
-                <i class="fas fa-bullhorn fa-2x" style="color:white;"></i>
-            </div>
-            <div class="announcement-popup-title" id="popupAnnouncementTitle"></div>
-            <div class="announcement-popup-body" id="popupAnnouncementBody"></div>
-            <div class="announcement-popup-meta" id="popupAnnouncementMeta"></div>
-            <div class="d-flex flex-column gap-2">
-                <button class="btn btn-primary btn-modern w-100" id="popupDismissBtn" title="This announcement will reappear tomorrow unless you opt out below">
-                    <i class="fas fa-check me-2"></i>Got it! (Dismiss for today)
-                </button>
-                <button class="btn btn-outline-secondary btn-modern w-100" id="popupOptOutBtn">
-                    <i class="fas fa-bell-slash me-2"></i>Don't show announcement popups again
-                </button>
-            </div>
         </div>
     </div>
 
-    <!-- STUDENT MESSAGING MODAL -->
-    <div id="studentMessageModal" class="message-modal-overlay">
-        <div class="message-modal-content">
-            <div class="message-modal-header">
-                <h5><i class="fas fa-comments me-2"></i>Message Admin</h5>
-                <button class="btn-close btn-close-white" id="closeStudentMsgModal"></button>
-            </div>
-            <div class="messages-scroll-area" id="studentMessageConversation">
-                <p class="text-muted text-center py-4"><i class="fas fa-paper-plane me-2"></i>Loading messages...</p>
-            </div>
-            <div class="message-input-area">
-                <div class="d-flex gap-2">
-                    <input type="text" class="form-control" id="studentMsgInput" placeholder="Type your message to admin...">
-                    <button class="btn btn-primary btn-modern" id="studentSendMsgBtn"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- CLOUD SYNC BUTTON -->
+    <div class="cloud-sync" id="cloudSyncBtn" title="Refresh from cloud"><i class="fas fa-sync-alt fa-2x"></i></div>
 
     <!-- BULK UPDATE MODAL -->
     <div class="bulk-update-modal" id="bulkUpdateModal">
@@ -1366,8 +1002,6 @@
         </div>
     </div>
 
-    <!-- Scripts: Keep external Bootstrap and replace inline script with complete working version from index (6).html -->
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // ==================== FIREBASE INIT ====================
@@ -1487,12 +1121,6 @@
             toast.addEventListener('hidden.bs.toast', () => toast.remove());
         }
 
-        function escapeHtml(str) {
-            const div = document.createElement('div');
-            div.appendChild(document.createTextNode(str == null ? '' : String(str)));
-            return div.innerHTML;
-        }
-
         // Load all data from Firebase
         async function loadAllData() {
             try {
@@ -1532,43 +1160,43 @@
         }
 
         // Update stats cards – if subjectId provided, count only for that subject
-      function updateStats(subjectId = null) {
-    totalStudents.textContent = Object.keys(students).length;
-    const today = new Date().toISOString().split('T')[0];
-    let p = 0, a = 0;
-    
-    console.log("Updating stats for subject:", subjectId);
-    console.log("Today's date:", today);
-    console.log("Today's attendance data:", attendance[today]);
-    
-    if (subjectId) {
-        // Count for specific subject
-        if (attendance[today] && attendance[today][subjectId]) {
-            console.log(`Found data for subject ${subjectId}:`, attendance[today][subjectId]);
-            Object.values(attendance[today][subjectId]).forEach(s => {
-                if (s === 'P') p++;
-                else if (s === 'A') a++;
-            });
-        } else {
-            console.log(`No data for subject ${subjectId} today`);
+        function updateStats(subjectId = null) {
+            totalStudents.textContent = Object.keys(students).length;
+            const today = new Date().toISOString().split('T')[0];
+            let p = 0, a = 0;
+            
+            console.log("Updating stats for subject:", subjectId);
+            console.log("Today's date:", today);
+            console.log("Today's attendance data:", attendance[today]);
+            
+            if (subjectId) {
+                // Count for specific subject
+                if (attendance[today] && attendance[today][subjectId]) {
+                    console.log(`Found data for subject ${subjectId}:`, attendance[today][subjectId]);
+                    Object.values(attendance[today][subjectId]).forEach(s => {
+                        if (s === 'P') p++;
+                        else if (s === 'A') a++;
+                    });
+                } else {
+                    console.log(`No data for subject ${subjectId} today`);
+                }
+            } else {
+                // Count across all subjects
+                if (attendance[today]) {
+                    Object.values(attendance[today]).forEach(subjectAttendance => {
+                        Object.values(subjectAttendance || {}).forEach(s => {
+                            if (s === 'P') p++;
+                            else if (s === 'A') a++;
+                        });
+                    });
+                }
+            }
+            presentToday.textContent = p;
+            absentToday.textContent = a;
+            totalAttendanceDays.textContent = Object.keys(attendance).length;
+            
+            console.log(`Present: ${p}, Absent: ${a}`);
         }
-    } else {
-        // Count across all subjects
-        if (attendance[today]) {
-            Object.values(attendance[today]).forEach(subjectAttendance => {
-                Object.values(subjectAttendance || {}).forEach(s => {
-                    if (s === 'P') p++;
-                    else if (s === 'A') a++;
-                });
-            });
-        }
-    }
-    presentToday.textContent = p;
-    absentToday.textContent = a;
-    totalAttendanceDays.textContent = Object.keys(attendance).length;
-    
-    console.log(`Present: ${p}, Absent: ${a}`);
-}
 
         // ==================== STUDENT LIST MODAL FUNCTIONS ====================
         function openStudentListModal() {
@@ -1794,8 +1422,15 @@
                 await loadAllData();
                 loginSection.style.display = 'none';
                 
-                if (currentUser.role === 'admin' || currentUser.role === 'view_only_admin') {
-                    showAdminDashboard();
+                if (currentUser.role === 'admin') {
+                    adminDash.style.display = 'block';
+                    adminWelcome.textContent = `Welcome, ${currentUser.fullName}`;
+                    loadCoursesForDropdowns();
+                    displayCourseStructure();
+                    initAttendanceDropdowns();
+                    renderUsersList();
+                    const currentSubject = document.getElementById('attendanceSubject')?.value;
+                    updateStats(currentSubject || null);
                 } else {
                     studentDash.style.display = 'block';
                     studentWelcome.textContent = `Welcome, ${currentUser.fullName}`;
@@ -1819,10 +1454,8 @@
                         studentCourse.textContent = course?.name || 'N/A';
                         studentSemester.textContent = semester?.name || 'N/A';
                         
-                        // FIXED: Populate subject dropdown with FORCE RERENDER
                         const subjectSelect = document.getElementById('studentSubjectSelector');
-                        subjectSelect.innerHTML = ''; // Clear
-                        
+                        subjectSelect.innerHTML = '';
                         studentCourseData.subjects.forEach((subId, index) => {
                             const subject = semester?.subjects[subId];
                             if (subject) {
@@ -1830,23 +1463,21 @@
                                 option.value = subId;
                                 option.textContent = subject.name;
                                 subjectSelect.appendChild(option);
-                                // Set first subject as selected
                                 if (index === 0) {
                                     option.selected = true;
                                 }
                             }
                         });
-                        
-                        // Force a change event to trigger render
-                        setTimeout(() => {
-                            renderStudentDashboard();
-                        }, 100);
+                        if (subjectSelect.options.length === 0) {
+                            subjectSelect.innerHTML = '<option value="">No subjects</option>';
+                        }
+                    } else {
+                        studentCourse.textContent = 'N/A';
+                        studentSemester.textContent = 'N/A';
+                        document.getElementById('studentSubjectSelector').innerHTML = '<option value="">No subjects</option>';
                     }
                     
                     renderStudentDashboard();
-                    loadAnnouncements();
-                    setTimeout(checkAndShowAnnouncementPopup, 500);
-                    updateStudentMsgBadge();
                 }
                 showToast('Login successful!', 'success');
             } catch (error) {
@@ -1868,7 +1499,6 @@
 
         // ==================== COURSE MANAGEMENT ====================
         window.addCourse = async function() {
-            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const name = document.getElementById('courseName').value;
             const code = document.getElementById('courseCode').value;
             if (!name || !code) {
@@ -1891,7 +1521,6 @@
         }
 
         window.addSemester = async function() {
-            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const courseId = document.getElementById('semesterCourse').value;
             const name = document.getElementById('semesterName').value;
             if (!courseId || !name) {
@@ -1930,7 +1559,6 @@
         }
 
         window.addSubject = async function() {
-            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const courseId = document.getElementById('subjectCourse').value;
             const semesterId = document.getElementById('subjectSemester').value;
             const name = document.getElementById('subjectName').value;
@@ -1977,7 +1605,6 @@
         }
 
         window.editCourse = function(courseId) {
-            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const course = courses[courseId];
             const newName = prompt('Enter new course name:', course.name);
             const newCode = prompt('Enter new course code:', course.code);
@@ -1997,24 +1624,21 @@
         }
 
         window.deleteCourse = async function(courseId) {
-            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
-            const course = courses[courseId];
-            const courseName = course?.name || courseId;
-            if (!confirm(`Delete course "${courseName}"? This action cannot be undone.`)) return;
-            try {
-                await db.ref('courses/' + courseId).remove();
-                showToast('Course deleted', 'success');
-                await loadAllData();
-                loadCoursesForDropdowns();
-                displayCourseStructure();
-                updateStats();
-            } catch (error) {
-                showToast('Error deleting course: ' + error.message, 'error');
+            if (!confirm('Are you sure you want to delete this course? This will also delete all semesters and subjects in this course.')) return;
+            
+            const hasAssignments = Object.values(studentCourses).some(sc => sc.courseId === courseId);
+            if (hasAssignments) {
+                if (!confirm('This course has students assigned. Deleting it will remove their assignments. Continue?')) return;
             }
+            
+            await db.ref('courses/' + courseId).remove();
+            showToast('Course deleted', 'success');
+            await loadAllData();
+            loadCoursesForDropdowns();
+            displayCourseStructure();
         }
 
         window.editSemester = function(courseId, semesterId) {
-            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const semester = courses[courseId]?.semesters[semesterId];
             const newName = prompt('Enter new semester name:', semester.name);
             
@@ -2032,23 +1656,23 @@
         }
 
         window.deleteSemester = async function(courseId, semesterId) {
-            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
-            const semester = courses[courseId]?.semesters[semesterId];
-            const semName = semester?.name || semesterId;
-            if (!confirm(`Delete semester "${semName}"? This action cannot be undone.`)) return;
-            try {
-                await db.ref(`courses/${courseId}/semesters/${semesterId}`).remove();
-                showToast('Semester deleted', 'success');
-                await loadAllData();
-                loadCoursesForDropdowns();
-                displayCourseStructure();
-            } catch (error) {
-                showToast('Error deleting semester: ' + error.message, 'error');
+            if (!confirm('Are you sure you want to delete this semester? This will also delete all subjects in this semester.')) return;
+            
+            const hasAssignments = Object.values(studentCourses).some(sc => 
+                sc.courseId === courseId && sc.semester === semesterId
+            );
+            if (hasAssignments) {
+                if (!confirm('This semester has students assigned. Deleting it will remove their assignments. Continue?')) return;
             }
+            
+            await db.ref(`courses/${courseId}/semesters/${semesterId}`).remove();
+            showToast('Semester deleted', 'success');
+            await loadAllData();
+            loadCoursesForDropdowns();
+            displayCourseStructure();
         }
 
         window.editSubject = function(courseId, semesterId, subjectId) {
-            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const subject = courses[courseId]?.semesters[semesterId]?.subjects[subjectId];
             const newName = prompt('Enter new subject name:', subject.name);
             const newCode = prompt('Enter new subject code:', subject.code);
@@ -2070,19 +1694,20 @@
         }
 
         window.deleteSubject = async function(courseId, semesterId, subjectId) {
-            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
-            const subject = courses[courseId]?.semesters[semesterId]?.subjects[subjectId];
-            const subjectName = subject?.name || subjectId;
-            if (!confirm(`Delete subject "${subjectName}"? This action cannot be undone.`)) return;
-            try {
-                await db.ref(`courses/${courseId}/semesters/${semesterId}/subjects/${subjectId}`).remove();
-                showToast('Subject deleted', 'success');
-                await loadAllData();
-                loadCoursesForDropdowns();
-                displayCourseStructure();
-            } catch (error) {
-                showToast('Error deleting subject: ' + error.message, 'error');
+            if (!confirm('Are you sure you want to delete this subject?')) return;
+            
+            const hasAssignments = Object.values(studentCourses).some(sc => 
+                sc.courseId === courseId && sc.semester === semesterId && sc.subjects.includes(subjectId)
+            );
+            if (hasAssignments) {
+                if (!confirm('This subject has students assigned. Deleting it will remove their assignments. Continue?')) return;
             }
+            
+            await db.ref(`courses/${courseId}/semesters/${semesterId}/subjects/${subjectId}`).remove();
+            showToast('Subject deleted', 'success');
+            await loadAllData();
+            loadCoursesForDropdowns();
+            displayCourseStructure();
         }
 
         function displayCourseStructure() {
@@ -2091,37 +1716,36 @@
                 document.getElementById('courseStructure').innerHTML = '<p class="text-muted text-center">No courses added yet. Click "Add Course" to get started.</p>';
                 return;
             }
-            const isAdmin = currentUser?.role === 'admin';
             
             Object.entries(courses).forEach(([courseId, course]) => {
                 html += `<div class="course-item">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5><strong>${escapeHtml(course.name)}</strong> (${escapeHtml(course.code)})</h5>
-                        ${isAdmin ? `<div class="action-buttons">
+                        <h5><strong>${course.name}</strong> (${course.code})</h5>
+                        <div class="action-buttons">
                             <button class="btn btn-sm btn-outline-primary" onclick="editCourse('${courseId}')"><i class="fas fa-edit"></i></button>
                             <button class="btn btn-sm btn-outline-danger" onclick="deleteCourse('${courseId}')"><i class="fas fa-trash"></i></button>
-                        </div>` : ''}
+                        </div>
                     </div>`;
                 
                 if (course.semesters && Object.keys(course.semesters).length > 0) {
                     Object.entries(course.semesters).forEach(([semId, sem]) => {
                         html += `<div class="semester-item">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h6>📚 ${escapeHtml(sem.name)}</h6>
-                                ${isAdmin ? `<div class="action-buttons">
+                                <h6>📚 ${sem.name}</h6>
+                                <div class="action-buttons">
                                     <button class="btn btn-sm btn-outline-primary" onclick="editSemester('${courseId}', '${semId}')"><i class="fas fa-edit"></i></button>
                                     <button class="btn btn-sm btn-outline-danger" onclick="deleteSemester('${courseId}', '${semId}')"><i class="fas fa-trash"></i></button>
-                                </div>` : ''}
+                                </div>
                             </div>`;
                         
                         if (sem.subjects && Object.keys(sem.subjects).length > 0) {
                             Object.entries(sem.subjects).forEach(([subId, sub]) => {
                                 html += `<div class="subject-item">
-                                    <span>📖 ${escapeHtml(sub.name)} (${escapeHtml(sub.code)}) - ${escapeHtml(String(sub.credits))} credits</span>
-                                    ${isAdmin ? `<div class="action-buttons">
+                                    <span>📖 ${sub.name} (${sub.code}) - ${sub.credits} credits</span>
+                                    <div class="action-buttons">
                                         <button class="btn btn-sm btn-outline-primary" onclick="editSubject('${courseId}', '${semId}', '${subId}')"><i class="fas fa-edit"></i></button>
                                         <button class="btn btn-sm btn-outline-danger" onclick="deleteSubject('${courseId}', '${semId}', '${subId}')"><i class="fas fa-trash"></i></button>
-                                    </div>` : ''}
+                                    </div>
                                 </div>`;
                             });
                         } else {
@@ -2200,7 +1824,6 @@
         }
 
         window.assignStudentToCourse = async function() {
-            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
             const studentRoll = document.getElementById('assignStudent').value;
             const courseId = document.getElementById('assignCourse').value;
             const semesterId = document.getElementById('assignSemester').value;
@@ -3019,7 +2642,7 @@
             cloudSyncBtn.addEventListener('click', async () => {
                 await loadAllData();
                 if (currentUser) {
-                    if (currentUser.role === 'admin' || currentUser.role === 'view_only_admin') { 
+                    if (currentUser.role === 'admin') { 
                         loadCoursesForDropdowns();
                         displayCourseStructure();
                         initAttendanceDropdowns();
@@ -3094,19 +2717,16 @@
             users = snap.val() || {};
             const tbody = document.getElementById('usersList');
             tbody.innerHTML = '';
-            const isAdmin = currentUser?.role === 'admin';
             
             Object.entries(users).forEach(([uid, u]) => {
-                const roleBadgeClass = u.role === 'admin' ? 'bg-danger' : u.role === 'view_only_admin' ? 'bg-info' : 'bg-primary';
-                const roleLabel = u.role === 'view_only_admin' ? 'View-Only' : u.role;
                 tbody.innerHTML += `<tr>
                     <td>${u.email}</td>
-                    <td><span class="badge ${roleBadgeClass}">${escapeHtml(roleLabel)}</span></td>
-                    <td>${escapeHtml(u.fullName)}</td>
+                    <td><span class="badge ${u.role==='admin'?'bg-danger':'bg-primary'}">${u.role}</span></td>
+                    <td>${u.fullName}</td>
                     <td>${u.rollNo || '-'}</td>
                     <td>
-                        ${isAdmin ? `<button class="btn btn-sm btn-outline-warning" onclick="resetPassword('${uid}')"><i class="fas fa-key"></i></button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('${uid}')"><i class="fas fa-trash"></i></button>` : ''}
+                        <button class="btn btn-sm btn-outline-warning" onclick="resetPassword('${uid}')"><i class="fas fa-key"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('${uid}')"><i class="fas fa-trash"></i></button>
                     </td>
                 </tr>`;
             });
@@ -3123,23 +2743,148 @@
             }
         };
 
+        // ==================== UPDATED DELETE USER ====================
         window.deleteUser = async (uid) => {
-            if (uid === currentUser?.uid) { showToast('Cannot delete yourself', 'error'); return; }
-            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
-            const userData = users[uid];
-            const userName = userData?.fullName || uid;
-            if (!confirm(`Delete user "${userName}"? This action cannot be undone.`)) return;
+            if (uid === currentUser?.uid) { 
+                showToast('Cannot delete yourself', 'error'); 
+                return; 
+            }
+            if (!confirm('Delete user?')) return;
+            
             try {
-                if (userData?.rollNo) await db.ref('students/' + userData.rollNo).remove();
+                const userData = users[uid];
+                
+                if (userData.role === 'student' && userData.rollNo) {
+                    const rollNo = userData.rollNo;
+                    
+                    // Remove from students
+                    await db.ref('students/' + rollNo).remove();
+                    delete students[rollNo];
+                    
+                    // Remove from student_courses
+                    await db.ref('student_courses/' + rollNo).remove();
+                    delete studentCourses[rollNo];
+                    
+                    // Remove from attendance records
+                    const attendanceUpdates = {};
+                    Object.keys(attendance).forEach(date => {
+                        Object.keys(attendance[date] || {}).forEach(subject => {
+                            if (attendance[date][subject] && attendance[date][subject][rollNo]) {
+                                attendanceUpdates[`/attendance/${date}/${subject}/${rollNo}`] = null;
+                            }
+                        });
+                    });
+                    
+                    if (Object.keys(attendanceUpdates).length > 0) {
+                        await db.ref().update(attendanceUpdates);
+                        // Update local attendance
+                        Object.keys(attendance).forEach(date => {
+                            Object.keys(attendance[date] || {}).forEach(subject => {
+                                if (attendance[date][subject] && attendance[date][subject][rollNo]) {
+                                    delete attendance[date][subject][rollNo];
+                                }
+                            });
+                        });
+                    }
+                }
+                
+                // Remove from users
                 await db.ref('users/' + uid).remove();
-                showToast('User deleted', 'success');
-                await loadAllData();
+                delete users[uid];
+                
+                showToast('User removed', 'success');
                 renderUsersList();
                 updateStats();
+                
+                // Refresh views
+                const currentSubject = document.getElementById('attendanceSubject')?.value;
+                if (currentSubject) {
+                    renderSubjectAttendance(currentSubject);
+                }
+                if (studentListModal.style.display === 'flex') {
+                    renderStudentList();
+                }
+                
             } catch (error) {
                 showToast(error.message, 'error');
             }
         };
+
+        // ==================== NEW CLEANUP FUNCTION ====================
+        async function cleanupOrphanedStudents() {
+            try {
+                console.log("Starting cleanup of orphaned students...");
+                let cleanedCount = 0;
+                const updates = {};
+                
+                // Check each entry in student_courses
+                for (const roll in studentCourses) {
+                    // If this roll number doesn't exist in students
+                    if (!students[roll]) {
+                        console.log(`Found orphaned student_courses entry for roll: ${roll}`);
+                        // Mark for deletion
+                        updates['/student_courses/' + roll] = null;
+                        cleanedCount++;
+                        
+                        // Also clean up any attendance records for this roll
+                        Object.keys(attendance).forEach(date => {
+                            Object.keys(attendance[date] || {}).forEach(subject => {
+                                if (attendance[date][subject] && attendance[date][subject][roll]) {
+                                    updates[`/attendance/${date}/${subject}/${roll}`] = null;
+                                }
+                            });
+                        });
+                    }
+                }
+                
+                // Apply all updates if any
+                if (cleanedCount > 0) {
+                    await db.ref().update(updates);
+                    
+                    // Update local objects
+                    Object.keys(updates).forEach(path => {
+                        if (path.startsWith('/student_courses/')) {
+                            const roll = path.replace('/student_courses/', '');
+                            delete studentCourses[roll];
+                        } else if (path.startsWith('/attendance/')) {
+                            // Parse path to update local attendance
+                            const parts = path.split('/');
+                            // path format: /attendance/date/subject/roll
+                            if (parts.length === 5) {
+                                const date = parts[2];
+                                const subject = parts[3];
+                                const roll = parts[4];
+                                if (attendance[date] && 
+                                    attendance[date][subject] && 
+                                    attendance[date][subject][roll]) {
+                                    delete attendance[date][subject][roll];
+                                }
+                            }
+                        }
+                    });
+                    
+                    showToast(`Cleaned up ${cleanedCount} orphaned student records`, 'success');
+                } else {
+                    showToast('No orphaned records found', 'info');
+                }
+                
+                // Refresh views
+                renderStudentList();
+                renderUsersList();
+                const currentSubject = document.getElementById('attendanceSubject')?.value;
+                if (currentSubject) {
+                    renderSubjectAttendance(currentSubject);
+                }
+                updateStats();
+                
+            } catch (error) {
+                console.error('Error during cleanup:', error);
+                showToast('Error during cleanup: ' + error.message, 'error');
+            }
+        }
+
+        // Make cleanup function globally accessible
+        window.cleanupOrphanedStudents = cleanupOrphanedStudents;
 
         document.getElementById('showPasswords')?.addEventListener('change', renderUsersList);
 
@@ -3195,436 +2940,7 @@
             });
         }
 
-        // ==================== ANNOUNCEMENT SYSTEM ====================
-        window.sendAnnouncement = async function() {
-            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
-            const title = document.getElementById('announcementTitle')?.value?.trim();
-            const message = document.getElementById('announcementMessage')?.value?.trim();
-            if (!title) { showToast('Please enter a title', 'error'); return; }
-            if (!message) { showToast('Please enter a message', 'error'); return; }
-            try {
-                await db.ref('announcements').push({
-                    title,
-                    message,
-                    sentBy: currentUser.uid,
-                    sentByName: currentUser.fullName,
-                    timestamp: Date.now()
-                });
-                document.getElementById('announcementTitle').value = '';
-                document.getElementById('announcementMessage').value = '';
-                showToast('Announcement sent to all students!', 'success');
-                loadAnnouncements();
-            } catch (error) {
-                showToast('Error sending announcement: ' + error.message, 'error');
-            }
-        }
-
-        window.loadAnnouncements = async function() {
-            try {
-                const snap = await db.ref('announcements').orderByChild('timestamp').once('value');
-                const announcementsData = snap.val() || {};
-                const sorted = Object.entries(announcementsData).sort((a, b) => b[1].timestamp - a[1].timestamp);
-                const isAdmin = currentUser?.role === 'admin';
-
-                const adminContainer = document.getElementById('adminAnnouncementsList');
-                if (adminContainer) {
-                    if (sorted.length === 0) {
-                        adminContainer.innerHTML = '<p class="text-muted text-center py-4">No announcements yet.</p>';
-                    } else {
-                        adminContainer.innerHTML = sorted.map(([id, ann]) => {
-                            const date = new Date(ann.timestamp).toLocaleString();
-                            return `<div class="announcement-card">
-                                <div class="announcement-meta"><i class="fas fa-user-tie me-1"></i><strong>${escapeHtml(ann.sentByName)}</strong> &bull; ${escapeHtml(date)}</div>
-                                <div class="announcement-title">${escapeHtml(ann.title)}</div>
-                                <div class="announcement-body">${escapeHtml(ann.message)}</div>
-                                ${isAdmin ? `<button class="btn btn-sm btn-outline-danger mt-2" onclick="deleteAnnouncement('${id}')"><i class="fas fa-trash me-1"></i>Delete</button>` : ''}
-                            </div>`;
-                        }).join('');
-                    }
-                }
-
-                const studentContainer = document.getElementById('studentAnnouncementsList');
-                if (studentContainer) {
-                    if (sorted.length === 0) {
-                        studentContainer.innerHTML = '<p class="text-muted text-center py-3"><i class="fas fa-info-circle me-2"></i>No announcements yet.</p>';
-                    } else {
-                        studentContainer.innerHTML = sorted.map(([id, ann]) => {
-                            const date = new Date(ann.timestamp).toLocaleString();
-                            return `<div class="announcement-card">
-                                <div class="announcement-meta"><i class="fas fa-user-tie me-1"></i><strong>${escapeHtml(ann.sentByName)}</strong> &bull; ${escapeHtml(date)}</div>
-                                <div class="announcement-title">${escapeHtml(ann.title)}</div>
-                                <div class="announcement-body">${escapeHtml(ann.message)}</div>
-                            </div>`;
-                        }).join('');
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading announcements:', error);
-            }
-        }
-
-        window.deleteAnnouncement = async function(annId) {
-            if (currentUser?.role !== 'admin') { showToast('Permission denied', 'error'); return; }
-            if (!confirm('Delete this announcement?')) return;
-            try {
-                await db.ref('announcements/' + annId).remove();
-                showToast('Announcement deleted', 'success');
-                loadAnnouncements();
-            } catch (error) {
-                showToast('Error deleting announcement: ' + error.message, 'error');
-            }
-        }
-
-        // Tab click listeners for lazy-loading
-        document.getElementById('announcementsTabLink')?.addEventListener('shown.bs.tab', loadAnnouncements);
-        document.getElementById('messagesTabLink')?.addEventListener('shown.bs.tab', loadMessageThreads);
-
-        // ==================== SMART ANNOUNCEMENT POPUP ====================
-        async function checkAndShowAnnouncementPopup() {
-            if (!currentUser || currentUser.role !== 'student') return;
-            try {
-                // Check if student opted out
-                const optOutSnap = await db.ref(`announcement_tracking/${currentUser.uid}/optedOut`).once('value');
-                if (optOutSnap.val() === true) return;
-
-                // Get latest announcement
-                const snap = await db.ref('announcements').orderByChild('timestamp').limitToLast(1).once('value');
-                if (!snap.exists()) return;
-                const entries = Object.entries(snap.val());
-                if (entries.length === 0) return;
-                const [annId, ann] = entries[0];
-
-                // Check if dismissed today
-                const today = new Date().toISOString().split('T')[0];
-                const dismissSnap = await db.ref(`announcement_tracking/${currentUser.uid}/dismissed/${annId}`).once('value');
-                if (dismissSnap.val() === today) return;
-
-                // Show popup
-                const popup = document.getElementById('announcementPopup');
-                if (!popup) return;
-                document.getElementById('popupAnnouncementTitle').textContent = ann.title;
-                document.getElementById('popupAnnouncementBody').textContent = ann.message;
-                document.getElementById('popupAnnouncementMeta').textContent =
-                    `From ${ann.sentByName || 'Admin'} \u2022 ${new Date(ann.timestamp).toLocaleString()}`;
-                popup.dataset.annId = annId;
-                popup.style.display = 'flex';
-            } catch (error) {
-                console.error('Error checking announcement popup:', error);
-            }
-        }
-
-        function closeAnnouncementPopup() {
-            const popup = document.getElementById('announcementPopup');
-            if (popup) popup.style.display = 'none';
-        }
-
-        document.getElementById('announcementPopup')?.addEventListener('click', function(e) {
-            if (e.target === this) closeAnnouncementPopup();
-        });
-
-        document.getElementById('popupDismissBtn')?.addEventListener('click', async function() {
-            const popup = document.getElementById('announcementPopup');
-            const annId = popup?.dataset?.annId;
-            closeAnnouncementPopup();
-            if (!annId || !currentUser) return;
-            const today = new Date().toISOString().split('T')[0];
-            try {
-                await db.ref(`announcement_tracking/${currentUser.uid}/dismissed/${annId}`).set(today);
-                showToast('Announcement dismissed for today', 'success');
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        });
-
-        document.getElementById('popupOptOutBtn')?.addEventListener('click', async function() {
-            if (!currentUser) return;
-            if (!confirm('Stop receiving announcement popups? You can always scroll down to see announcements on your dashboard.')) return;
-            closeAnnouncementPopup();
-            try {
-                await db.ref(`announcement_tracking/${currentUser.uid}/optedOut`).set(true);
-                showToast('Announcement popups disabled', 'success');
-            } catch (error) {
-                showToast('Error: ' + error.message, 'error');
-            }
-        });
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key !== 'Escape') return;
-            const announcementPopup = document.getElementById('announcementPopup');
-            if (announcementPopup?.style.display === 'flex') {
-                closeAnnouncementPopup();
-                return;
-            }
-            const msgModal = document.getElementById('studentMessageModal');
-            if (msgModal?.style.display === 'flex') {
-                msgModal.style.display = 'none';
-                return;
-            }
-            const bulkModal = document.getElementById('bulkUpdateModal');
-            if (bulkModal?.style.display === 'flex') {
-                bulkModal.style.display = 'none';
-            }
-        });
-
-        // ==================== MESSAGING SYSTEM ====================
-        let currentMessageThread = null;
-
-        async function loadMessageThreads() {
-            if (!currentUser || (currentUser.role !== 'admin' && currentUser.role !== 'view_only_admin')) return;
-            try {
-                const snap = await db.ref('messages').orderByChild('lastMessageTimestamp').once('value');
-                const threads = snap.val() || {};
-                const container = document.getElementById('messageThreadsList');
-                if (!container) return;
-
-                const sorted = Object.entries(threads)
-                    .sort((a, b) => (b[1].lastMessageTimestamp || 0) - (a[1].lastMessageTimestamp || 0));
-
-                if (sorted.length === 0) {
-                    container.innerHTML = '<p class="text-muted text-center py-4">No messages yet.</p>';
-                    updateAdminMsgBadge(0);
-                    return;
-                }
-
-                let unreadCount = 0;
-                let html = '';
-                sorted.forEach(([threadId, thread]) => {
-                    if (thread.unreadByAdmin) unreadCount++;
-                    const time = thread.lastMessageTimestamp
-                        ? new Date(thread.lastMessageTimestamp).toLocaleDateString() : '';
-                    const preview = (thread.lastMessage || '').substring(0, 55);
-                    html += `<div class="message-thread-item ${thread.unreadByAdmin ? 'unread' : ''}" onclick="openAdminMessageThread('${threadId}')">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <strong>${escapeHtml(thread.studentName || 'Unknown')}</strong>
-                            <span style="font-size:0.72rem;color:var(--text-muted);">${time}</span>
-                        </div>
-                        ${thread.studentRollNo ? `<div style="font-size:0.76rem;color:var(--primary);">Roll: ${escapeHtml(thread.studentRollNo)}</div>` : ''}
-                        <div style="font-size:0.8rem;color:var(--text-muted);margin-top:3px;">${escapeHtml(preview)}${(thread.lastMessage||'').length > 55 ? '...' : ''}</div>
-                        ${thread.unreadByAdmin ? '<span class="badge bg-primary mt-1">New</span>' : ''}
-                    </div>`;
-                });
-                container.innerHTML = html;
-                updateAdminMsgBadge(unreadCount);
-            } catch (error) {
-                console.error('Error loading message threads:', error);
-            }
-        }
-
-        function updateAdminMsgBadge(count) {
-            const badge = document.getElementById('adminMessagesCount');
-            if (badge) {
-                badge.textContent = count;
-                badge.style.display = count > 0 ? 'inline' : 'none';
-            }
-        }
-
-        window.openAdminMessageThread = async function(threadId) {
-            currentMessageThread = threadId;
-            try {
-                const snap = await db.ref(`messages/${threadId}`).once('value');
-                const thread = snap.val();
-                if (!thread) return;
-
-                await db.ref(`messages/${threadId}/unreadByAdmin`).set(false);
-
-                const header = document.getElementById('messageConversationHeader');
-                if (header) {
-                    header.querySelector('span').innerHTML =
-                        `<i class="fas fa-user me-2"></i>Conversation with <strong>${escapeHtml(thread.studentName)}</strong>`;
-                }
-
-                document.getElementById('adminReplyArea').style.display = currentUser?.role === 'admin' ? 'block' : 'none';
-                renderMessagesInContainer(thread.messages || {}, 'admin', 'adminMessageConversation', threadId);
-                loadMessageThreads();
-            } catch (error) {
-                console.error('Error opening message thread:', error);
-            }
-        }
-
-        function renderMessagesInContainer(messages, viewerRole, containerId, threadId) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            const sorted = Object.entries(messages).sort((a, b) => a[1].timestamp - b[1].timestamp);
-            if (sorted.length === 0) {
-                container.innerHTML = '<p class="text-muted text-center py-4">No messages yet. Start the conversation!</p>';
-                return;
-            }
-            const isAdmin = currentUser?.role === 'admin';
-            const isStudent = currentUser?.role === 'student';
-            let html = '';
-            sorted.forEach(([msgId, msg]) => {
-                const isOwn = (viewerRole === 'admin' && msg.from === 'admin') ||
-                              (viewerRole === 'student' && msg.from === 'student');
-                const time = new Date(msg.timestamp).toLocaleString();
-                // Admin can delete any message; students can delete their own messages (from === 'student' in their own thread)
-                const canDelete = threadId && (isAdmin || (isStudent && msg.from === 'student'));
-                html += `<div class="d-flex ${isOwn ? 'justify-content-end' : 'justify-content-start'} mb-3">
-                    <div class="message-bubble ${isOwn ? 'sent' : 'received'}">
-                        <div class="message-sender">${escapeHtml(msg.fromName)}</div>
-                        <div>${escapeHtml(msg.text)}</div>
-                        <div class="d-flex justify-content-between align-items-center gap-2 mt-1">
-                            <span class="message-time">${time}</span>
-                            ${canDelete ? `<button class="btn btn-link btn-sm p-0 text-danger" style="font-size:0.75rem;" onclick="deleteMessage('${threadId}','${msgId}')"><i class="fas fa-trash-alt"></i></button>` : ''}
-                        </div>
-                    </div>
-                </div>`;
-            });
-            container.innerHTML = html;
-            container.scrollTop = container.scrollHeight;
-        }
-
-        window.deleteMessage = async function(threadId, msgId) {
-            if (!currentUser) return;
-            if (currentUser.role === 'view_only_admin') { showToast('Permission denied', 'error'); return; }
-            if (!confirm('Delete this message?')) return;
-            try {
-                await db.ref(`messages/${threadId}/messages/${msgId}`).remove();
-                showToast('Message deleted', 'success');
-                // Refresh the appropriate conversation view
-                if (currentUser.role === 'admin') {
-                    openAdminMessageThread(threadId);
-                } else {
-                    loadStudentMessages();
-                }
-            } catch (error) {
-                showToast('Error deleting message: ' + error.message, 'error');
-            }
-        }
-
-        async function sendAdminReply() {
-            if (!currentMessageThread || !currentUser) return;
-            if (currentUser.role !== 'admin') { showToast('Permission denied', 'error'); return; }
-            const input = document.getElementById('adminReplyInput');
-            const text = input?.value?.trim();
-            if (!text) return;
-            try {
-                const msgRef = db.ref(`messages/${currentMessageThread}/messages`).push();
-                await msgRef.set({
-                    text, from: 'admin', fromName: currentUser.fullName, timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
-                await db.ref(`messages/${currentMessageThread}`).update({
-                    lastMessage: text, lastMessageTimestamp: firebase.database.ServerValue.TIMESTAMP,
-                    unreadByAdmin: false, unreadByStudent: true
-                });
-                if (input) input.value = '';
-                openAdminMessageThread(currentMessageThread);
-            } catch (error) {
-                showToast('Error sending reply: ' + error.message, 'error');
-            }
-        }
-
-        document.getElementById('adminSendReplyBtn')?.addEventListener('click', sendAdminReply);
-        document.getElementById('adminReplyInput')?.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') sendAdminReply();
-        });
-
-        async function loadStudentMessages() {
-            if (!currentUser) return;
-            const threadId = currentUser.uid;
-            try {
-                const snap = await db.ref(`messages/${threadId}`).once('value');
-                const thread = snap.val();
-                const convEl = document.getElementById('studentMessageConversation');
-                if (!thread || !thread.messages) {
-                    if (convEl) convEl.innerHTML = '<p class="text-muted text-center py-4"><i class="fas fa-paper-plane me-2"></i>No messages yet. Send a message to admin!</p>';
-                    return;
-                }
-                renderMessagesInContainer(thread.messages, 'student', 'studentMessageConversation', threadId);
-                if (thread.unreadByStudent) {
-                    await db.ref(`messages/${threadId}/unreadByStudent`).set(false);
-                    updateStudentMsgBadge();
-                }
-            } catch (error) {
-                console.error('Error loading student messages:', error);
-            }
-        }
-
-        async function sendStudentMessage() {
-            if (!currentUser) return;
-            const input = document.getElementById('studentMsgInput');
-            const text = input?.value?.trim();
-            if (!text) return;
-            const threadId = currentUser.uid;
-            try {
-                const threadSnap = await db.ref(`messages/${threadId}`).once('value');
-                if (!threadSnap.exists()) {
-                    await db.ref(`messages/${threadId}`).set({
-                        studentUid: currentUser.uid,
-                        studentName: currentUser.fullName,
-                        studentRollNo: currentUser.rollNo || '',
-                        createdAt: firebase.database.ServerValue.TIMESTAMP,
-                        lastMessageTimestamp: firebase.database.ServerValue.TIMESTAMP
-                    });
-                }
-                const msgRef = db.ref(`messages/${threadId}/messages`).push();
-                await msgRef.set({
-                    text, from: 'student', fromName: currentUser.fullName, timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
-                await db.ref(`messages/${threadId}`).update({
-                    lastMessage: text, lastMessageTimestamp: firebase.database.ServerValue.TIMESTAMP,
-                    unreadByAdmin: true, unreadByStudent: false
-                });
-                if (input) input.value = '';
-                loadStudentMessages();
-            } catch (error) {
-                showToast('Error sending message: ' + error.message, 'error');
-            }
-        }
-
-        async function updateStudentMsgBadge() {
-            if (!currentUser) return;
-            try {
-                const snap = await db.ref(`messages/${currentUser.uid}/unreadByStudent`).once('value');
-                const badge = document.getElementById('studentMsgBadge');
-                if (badge) badge.style.display = snap.val() ? 'flex' : 'none';
-            } catch (error) {
-                console.error('Error updating student msg badge:', error);
-            }
-        }
-
-        document.getElementById('openStudentMsgBtn')?.addEventListener('click', function() {
-            document.getElementById('studentMessageModal').style.display = 'flex';
-            loadStudentMessages();
-        });
-        document.getElementById('closeStudentMsgModal')?.addEventListener('click', function() {
-            document.getElementById('studentMessageModal').style.display = 'none';
-        });
-        document.getElementById('studentMessageModal')?.addEventListener('click', function(e) {
-            if (e.target === this) this.style.display = 'none';
-        });
-        document.getElementById('studentSendMsgBtn')?.addEventListener('click', sendStudentMessage);
-        document.getElementById('studentMsgInput')?.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') sendStudentMessage();
-        });
-
         // ==================== INIT ====================
-        function applyRolePermissions() {
-            const isViewOnly = currentUser?.role === 'view_only_admin';
-            const badge = document.getElementById('adminRoleBadge');
-            // Reset both role classes before applying new one
-            adminDash.classList.remove('role-view-only', 'role-admin');
-            if (isViewOnly) {
-                adminDash.classList.add('role-view-only');
-                if (badge) { badge.textContent = 'View Only'; badge.className = 'role-badge view-only'; badge.style.display = ''; }
-            } else {
-                adminDash.classList.add('role-admin');
-                if (badge) { badge.textContent = 'Admin'; badge.className = 'role-badge admin'; badge.style.display = ''; }
-            }
-        }
-
-        function showAdminDashboard() {
-            adminDash.style.display = 'block';
-            adminWelcome.textContent = `Welcome, ${currentUser.fullName}`;
-            applyRolePermissions();
-            loadCoursesForDropdowns();
-            displayCourseStructure();
-            initAttendanceDropdowns();
-            renderUsersList();
-            const currentSubject = document.getElementById('attendanceSubject')?.value;
-            updateStats(currentSubject || null);
-            loadAnnouncements();
-        }
-
         async function init() {
             await createDefaultAdminIfNeeded();
             await loadAllData();
@@ -3637,8 +2953,15 @@
                         currentUser = { uid: user.uid, ...userData };
                         await loadAllData();
                         loginSection.style.display = 'none';
-                        if (currentUser.role === 'admin' || currentUser.role === 'view_only_admin') {
-                            showAdminDashboard();
+                        if (currentUser.role === 'admin') {
+                            adminDash.style.display = 'block';
+                            adminWelcome.textContent = `Welcome, ${currentUser.fullName}`;
+                            loadCoursesForDropdowns();
+                            displayCourseStructure();
+                            initAttendanceDropdowns();
+                            renderUsersList();
+                            const currentSubject = document.getElementById('attendanceSubject')?.value;
+                            updateStats(currentSubject || null);
                         } else {
                             studentDash.style.display = 'block';
                             studentWelcome.textContent = `Welcome, ${currentUser.fullName}`;
@@ -3686,9 +3009,6 @@
                             }
                             
                             renderStudentDashboard();
-                            loadAnnouncements();
-                            setTimeout(checkAndShowAnnouncementPopup, 500);
-                            updateStudentMsgBadge();
                         }
                         showToast('Auto-login successful!', 'success');
                     }
